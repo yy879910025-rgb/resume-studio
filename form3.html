@@ -1124,9 +1124,15 @@ function updateProgress() {
   // Enable submit
   const conf1 = document.getElementById('confirm1').checked;
   const conf2 = document.getElementById('confirm2').checked;
-  const hasContent = document.querySelectorAll('.field-input.filled, .field-textarea.filled').length > 5;
+  // 统计所有有值的输入框（不依赖 .filled class）
+  var allInputs = document.querySelectorAll('.field-input, .field-textarea, .field-select');
+  var filledCount = 0;
+  allInputs.forEach(function(el) {
+    if (el.tagName === 'SELECT') { if (el.value) filledCount++; }
+    else if (el.value && el.value.trim()) filledCount++;
+  });
   var btn = document.getElementById('submitBtn');
-  if (conf1 && conf2 && hasContent) {
+  if (conf1 && conf2 && filledCount >= 3) {
     btn.classList.add('ready');
   } else {
     btn.classList.remove('ready');
@@ -1255,9 +1261,14 @@ function handleSubmit() {
       document.querySelector('.submit-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    var filled = document.querySelectorAll('.field-input.filled, .field-textarea.filled').length;
-    if (filled < 6) {
-      showToast('请至少填写姓名、学校和几段经历');
+    var allInputs2 = document.querySelectorAll('.field-input, .field-textarea, .field-select');
+    var filled2 = 0;
+    allInputs2.forEach(function(el) {
+      if (el.tagName === 'SELECT') { if (el.value) filled2++; }
+      else if (el.value && el.value.trim()) filled2++;
+    });
+    if (filled2 < 3) {
+      showToast('请至少填写姓名、学校和至少一段经历');
     }
     // Also try validateForm
     validateForm();
