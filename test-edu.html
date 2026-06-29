@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>测试教育</title></head><body>
+<h2>教育背景测试</h2>
+<div id="educationContainer"></div>
+<button onclick="addEducation()">+ 添加教育经历</button>
+<script>
+let eduCount=0;
+function eduHTML(n){
+  var del=n>1?'<button onclick="removeEducation('+n+')">删除</button>':'';
+  return '<div data-education="'+n+'" style="border:1px solid #ccc;padding:10px;margin:5px 0;">教育经历 '+n+' '+del+'<br><input name="eduSchool'+n+'" placeholder="学校"></div>';
+}
+function addEducation(){eduCount++;document.getElementById('educationContainer').insertAdjacentHTML('beforeend',eduHTML(eduCount));}
+function removeEducation(n){document.querySelector('[data-education="'+n+'"]').remove();}
+addEducation();
+</script></body></html>
