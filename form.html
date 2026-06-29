@@ -1346,18 +1346,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Restore
   if (localStorage.getItem(AUTO_SAVE_KEY)) {
-    document.getElementById('educationContainer').innerHTML = '';
-    document.getElementById('internshipContainer').innerHTML = '';
-    document.getElementById('projectContainer').innerHTML = '';
-    document.getElementById('campusContainer').innerHTML = '';
-    document.getElementById('jdContainer').innerHTML = '';
-    eduCount = 0; internshipCount = 0; projectCount = 0; campusCount = 0; jdCount = 0;
-    restoreForm();
-    if (eduCount === 0) addEducation();
-    if (internshipCount === 0) addInternship();
-    if (projectCount === 0) addProject();
-    if (campusCount === 0) addCampus();
-    if (jdCount === 0) addJD();
+    // 只恢复表单字段值，不重建动态区块（区块已在上面创建）
+    try {
+      const raw = localStorage.getItem(AUTO_SAVE_KEY);
+      const data = JSON.parse(raw);
+      Object.keys(data).forEach(key => {
+        if (key.startsWith('_')) return;
+        const val = data[key];
+        if (Array.isArray(val)) {
+          val.forEach(v => { const cb = document.querySelector('[name="'+key+'"][value="'+v+'"]'); if (cb) cb.checked = true; });
+        } else {
+          const el = document.querySelector('[name="'+key+'"]');
+          if (el) { el.value = val; if (val.trim()) el.classList.add('filled'); }
+        }
+      });
+    } catch(e) {}
   }
 
   updateProgress();
