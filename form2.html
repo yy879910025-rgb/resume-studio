@@ -613,6 +613,19 @@
 </head>
 <body>
 
+<div id="jsErrors" style="background:#fff3cd;border:2px solid #ffc107;padding:12px;margin:8px;border-radius:8px;font-size:13px;display:none;font-family:monospace;"></div>
+<script>
+window.onerror = function(msg, url, line, col, err) {
+  var el = document.getElementById('jsErrors');
+  if (el) {
+    el.style.display = 'block';
+    el.innerHTML += '<div style="color:#dc2626;margin:4px 0;">❌ 第'+line+'行: '+msg+'</div>';
+  }
+  return false;
+};
+</script>
+
+
 <!-- ═══ TOP BAR ═══ -->
 <div class="topbar">
   <div class="topbar-inner">
@@ -977,7 +990,17 @@ function eduHTML(n) {
     '<div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses'+n+'" placeholder="数据结构、操作系统、机器学习"></div>' +
   '</div>';
 }
-function addEducation() { eduCount++; document.getElementById('educationContainer').insertAdjacentHTML('beforeend', eduHTML(eduCount)); bindSection(document.querySelector('[data-education="'+eduCount+'"]')); updateProgress(); autoSave(); }
+function addEducation() { 
+  eduCount++; 
+  var container = document.getElementById('educationContainer');
+  if (!container) { alert('educationContainer not found!'); return; }
+  container.insertAdjacentHTML('beforeend', eduHTML(eduCount)); 
+  var newEl = document.querySelector('[data-education="'+eduCount+'"]');
+  if (!newEl) { alert('new education element not found!'); return; }
+  bindSection(newEl); 
+  updateProgress(); 
+  autoSave(); 
+}
 function removeEducation(n) { var el=document.querySelector('[data-education="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
 
 // ── Campus ──
@@ -998,7 +1021,17 @@ function campusHTML(n) {
   '</div>';
 }
 
-function addCampus() { campusCount++; document.getElementById('campusContainer').insertAdjacentHTML('beforeend', campusHTML(campusCount)); bindSection(document.querySelector('[data-campus="'+campusCount+'"]')); updateProgress(); autoSave(); }
+function addCampus() { 
+  campusCount++; 
+  var container = document.getElementById('campusContainer');
+  if (!container) { alert('campusContainer not found!'); return; }
+  container.insertAdjacentHTML('beforeend', campusHTML(campusCount)); 
+  var newEl = document.querySelector('[data-campus="'+campusCount+'"]');
+  if (!newEl) { alert('new campus element not found!'); return; }
+  bindSection(newEl); 
+  updateProgress(); 
+  autoSave(); 
+}
 function removeCampus(n) { var el=document.querySelector('[data-campus="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
 
 // ── Photo handler ──
