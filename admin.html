@@ -99,7 +99,19 @@ function viewDetail(key,btn){
       h+='<div class="fl"><div class="fl-label">微信号</div><div class="fl-value" style="color:#e8614c;font-weight:700;font-size:1.1rem;">'+(dd.wechat||'未填')+'</div></div>';
       h+='<div class="fl"><div class="fl-label">留言</div><div class="fl-value">'+(dd.message||'无')+'</div></div>';
     }else{
-      h+='<pre>'+(dd.summary||JSON.stringify(dd,null,2))+'</pre>';
+      h+='<p style="font-size:14px;margin-bottom:12px;color:#6b7280;">信息收集表内容较长，请下载文件查看：</p>';
+      h+='<div style="display:flex;gap:16px;flex-wrap:wrap;">';
+      h+='<div onclick="downloadMD(\''+key+'\')" style="cursor:pointer;border:2px solid #e5e7eb;border-radius:12px;padding:20px 24px;text-align:center;flex:1;min-width:180px;transition:all .15s;" onmouseover="this.style.borderColor=\'#374151\'" onmouseout="this.style.borderColor=\'#e5e7eb\'">';
+      h+='<div style="font-size:36px;margin-bottom:8px;">📝</div>';
+      h+='<div style="font-weight:800;font-size:15px;">下载 Markdown</div>';
+      h+='<div style="font-size:12px;color:#6b7280;margin-top:4px;">给 Claude 读取，生成 AI 简历</div>';
+      h+='</div>';
+      h+='<div onclick="downloadDOCX(\''+key+'\')" style="cursor:pointer;border:2px solid #e5e7eb;border-radius:12px;padding:20px 24px;text-align:center;flex:1;min-width:180px;transition:all .15s;" onmouseover="this.style.borderColor=\'#2563eb\'" onmouseout="this.style.borderColor=\'#e5e7eb\'">';
+      h+='<div style="font-size:36px;margin-bottom:8px;">📄</div>';
+      h+='<div style="font-weight:800;font-size:15px;">下载 DOCX</div>';
+      h+='<div style="font-size:12px;color:#6b7280;margin-top:4px;">Word 打开，直接查看填写内容</div>';
+      h+='</div>';
+      h+='</div>';
     }
     dc.innerHTML=h;
   });
