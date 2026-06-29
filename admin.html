@@ -5,31 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>后台管理 · 简历工作室</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f3f2ef; color: #1a1f2e; padding: 20px; }
-  .container { max-width: 900px; margin: 0 auto; }
-  header { background: #1a1f2e; color: #fff; padding: 20px 24px; border-radius: 12px; margin-bottom: 24px; }
-  header h1 { font-size: 1.3rem; } header p { font-size: .8rem; opacity: .5; margin-top: 4px; }
-  .pwd-box { background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
-  .pwd-box input { padding: 10px 16px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 1rem; width: 200px; }
-  .pwd-box button { padding: 10px 24px; background: #1a1f2e; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-left: 8px; }
-  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
-  th { text-align: left; padding: 12px 16px; background: #f9fafb; font-size: .75rem; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; }
-  td { padding: 10px 16px; border-bottom: 1px solid #f3f4f6; font-size: .85rem; }
-  .badge { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: .7rem; font-weight: 700; }
-  .badge-contact { background: #dbeafe; color: #1d4ed8; } .badge-form { background: #fef3c7; color: #92400e; }
-  a.view { color: #e8614c; text-decoration: none; font-weight: 600; font-size: .82rem; cursor: pointer; }
-  .detail { display: none; background: #f9fafb; padding: 16px; margin: 0 16px 12px; border-radius: 8px; font-size: .82rem; line-height: 1.7; max-height: 300px; overflow-y: auto; }
-  .detail-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
-  .detail-card .field { margin-bottom: 10px; }
-  .detail-card .field-label { font-size: .75rem; color: #6b7280; margin-bottom: 2px; }
-  .detail-card .field-value { font-size: .9rem; }
-  .refresh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .refresh span { font-size: .85rem; color: #6b7280; } a.refresh-btn { color: #e8614c; font-size: .85rem; text-decoration: none; font-weight: 600; }
-  .empty { text-align: center; padding: 60px 20px; color: #6b7280; }
-  .loading { text-align: center; padding: 40px; color: #6b7280; }
-  .error { background: #fef2f2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }
-  footer { text-align: center; padding: 40px; color: #c4c8cf; font-size: .75rem; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f3f2ef;color:#1a1f2e;padding:20px}
+  .container{max-width:960px;margin:0 auto}
+  header{background:#1a1f2e;color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:24px}
+  header h1{font-size:1.3rem}header p{font-size:.8rem;opacity:.5;margin-top:4px}
+  .pwd-box{background:#fff;border-radius:12px;padding:40px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .pwd-box input{padding:10px 16px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:1rem;width:200px}
+  .pwd-box button{padding:10px 24px;background:#1a1f2e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;margin-left:8px}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  th{text-align:left;padding:12px 16px;background:#f9fafb;font-size:.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:.05em}
+  td{padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:.85rem}
+  .badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:.7rem;font-weight:700}
+  .badge-contact{background:#dbeafe;color:#1d4ed8}.badge-form{background:#fef3c7;color:#92400e}
+  a.view{color:#e8614c;text-decoration:none;font-weight:600;font-size:.82rem;cursor:pointer;margin-right:12px}
+  .detail{display:none;background:#f9fafb;padding:16px;margin:0 16px 12px;border-radius:8px;font-size:.82rem;line-height:1.7;max-height:350px;overflow-y:auto}
+  .detail-card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
+  .detail-card .field{margin-bottom:10px}
+  .detail-card .field-label{font-size:.75rem;color:#6b7280;margin-bottom:2px}
+  .detail-card .field-value{font-size:.9rem}
+  .refresh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .refresh span{font-size:.85rem;color:#6b7280}a.refresh-btn{color:#e8614c;font-size:.85rem;text-decoration:none;font-weight:600}
+  .empty{text-align:center;padding:60px 20px;color:#6b7280}
+  .loading{text-align:center;padding:40px;color:#6b7280}
+  .error{background:#fef2f2;color:#dc2626;padding:12px 16px;border-radius:8px;margin-bottom:16px}
+  .dl-btn{display:inline-block;padding:4px 12px;border-radius:4px;font-size:.75rem;font-weight:600;text-decoration:none;margin-right:8px;cursor:pointer}
+  .dl-md{background:#f3f4f6;color:#374151}.dl-json{background:#fef3c7;color:#92400e}
+  .dl-btn:hover{opacity:.8}
+  footer{text-align:center;padding:40px;color:#c4c8cf;font-size:.75rem}
 </style></head>
 <body><div class="container">
 <header><h1>后台管理</h1><p>客户提交记录 · 简历工作室</p></header>
@@ -44,6 +47,7 @@
 <script>
 var API='https://1448451563-12cwae2d5r.ap-guangzhou.tencentscf.com/api';
 var PWD='';
+
 function login(){PWD=document.getElementById('pwdInput').value;document.getElementById('loginError').style.display='none';loadData();}
 function loadData(){
   if(!PWD)return;
@@ -54,10 +58,18 @@ function loadData(){
     if(!data.length){document.getElementById('emptyBox').style.display='block';return;}
     document.getElementById('countLabel').textContent='共 '+data.length+' 条记录';document.getElementById('dataTable').style.display='table';
     var h='';data.forEach(function(item,i){
-      var tl=item.key.indexOf('contact')>=0?'联系我们':'信息收集表';
-      var tc=item.key.indexOf('contact')>=0?'badge-contact':'badge-form';
-      var summary=item.key.replace('submissions/','').substring(0,40);
-      h+='<tr><td>'+(item.time||'').substring(0,19)+'</td><td><span class="badge '+tc+'">'+tl+'</span></td><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+summary+'</td><td><a class="view" onclick="loadDetail(\''+item.key+'\','+i+')">查看</a></td></tr>';
+      var isContact=item.key.indexOf('contact')>=0;
+      var tl=isContact?'联系我们':'信息收集表';
+      var tc=isContact?'badge-contact':'badge-form';
+      var base=item.key.replace('submissions/','').replace('.json','');
+      var mdKey='submissions/'+base+'.md';
+      var summary=base.substring(0,40);
+      h+='<tr><td>'+(item.time||'').substring(0,19)+'</td><td><span class="badge '+tc+'">'+tl+'</span></td><td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+summary+'</td>';
+      h+='<td>';
+      h+='<a class="view" onclick="loadDetail(\''+item.key+'\','+i+')">查看</a>';
+      h+='<a class="dl-btn dl-md" href="'+API.replace('/api','')+'/dl/'+mdKey+'?pwd='+PWD+'" target="_blank">下载 Markdown</a>';
+      h+='<a class="dl-btn dl-json" href="'+API.replace('/api','')+'/dl/'+item.key+'?pwd='+PWD+'" target="_blank">下载 JSON</a>';
+      h+='</td></tr>';
       h+='<tr id="detail-'+i+'" style="display:none;"><td colspan="4"><div class="detail" id="dc-'+i+'"></div></td></tr>';
     });
     document.getElementById('tableBody').innerHTML=h;
@@ -69,15 +81,15 @@ function loadDetail(key,i){
   row.style.display='table-row';dc.innerHTML='加载中...';
   fetch(API+'/detail/'+key+'?pwd='+PWD).then(function(r){return r.json();}).then(function(d){
     var dd=d.data||{};
+    var isContact=d.type==='contact'||dd.type==='contact';
     var h='<div class="detail-card">';
-    if(d.type==='contact'||dd.type==='contact'){
+    if(isContact){
       h+='<div class="field"><div class="field-label">姓名</div><div class="field-value">'+(dd.name||'未填')+'</div></div>';
       h+='<div class="field"><div class="field-label">微信号</div><div class="field-value" style="color:#e8614c;font-weight:700;font-size:1rem;">'+(dd.wechat||'未填')+'</div></div>';
       h+='<div class="field"><div class="field-label">留言</div><div class="field-value">'+(dd.message||'无')+'</div></div>';
-    }else if(dd.summary){
-      h+='<pre style="white-space:pre-wrap;font-size:13px;line-height:1.6;margin:0">'+(dd.summary||'')+'</pre>';
     }else{
-      h+='<pre style="white-space:pre-wrap;font-size:12px;line-height:1.5;margin:0">'+JSON.stringify(d,null,2)+'</pre>';
+      var summary=dd.summary||'';
+      h+='<pre style="white-space:pre-wrap;font-size:13px;line-height:1.6;margin:0">'+(summary||JSON.stringify(dd,null,2))+'</pre>';
     }
     h+='</div>';
     dc.innerHTML=h;
