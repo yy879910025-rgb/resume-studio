@@ -953,41 +953,43 @@ function removeJD(n) {
 
 // ── Education ──
 function eduHTML(n) {
-  return `<div class="sub-section" data-education="${n}">
-    <div class="sub-section-title"><span class="dot">教育经历 ${n}</span>${n>1?`<button class="btn-remove" onclick="removeEducation(${n})">删除</button>`:''}</div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">学历 <span style="color:var(--error)">*</span></label><select class="field-select" name="eduDegree${n}" required><option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option><option>大专</option></select><div class="error-msg">请选择学历</div></div>
-      <div class="field"><label class="field-label">学校全称 <span style="color:var(--error)">*</span></label><input class="field-input" name="eduSchool${n}" placeholder="北京大学" required><div class="error-msg">请填写学校</div></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">专业全称</label><input class="field-input" name="eduMajor${n}" placeholder="计算机科学与技术"></div>
-      <div class="field"><label class="field-label">就读时间</label><input class="field-input" name="eduTime${n}" placeholder="2020.09 - 2024.06"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" name="eduGpa${n}" placeholder="3.7/4.0，专业前15%"></div>
-      <div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" name="eduHonors${n}" placeholder="国家奖学金（2022）"></div>
-    </div>
-    <div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses${n}" placeholder="数据结构、操作系统、机器学习"></div>
-  </div>`;
+  var delBtn = n>1 ? '<button class="btn-remove" onclick="removeEducation('+n+')">删除</button>' : '';
+  return '<div class="sub-section" data-education="'+n+'">'+
+    '<div class="sub-section-title"><span class="dot">教育经历 '+n+'</span>'+delBtn+'</div>'+
+    '<div class="field-row">'+
+      '<div class="field"><label class="field-label">学历 <span style="color:var(--error)">*</span></label><select class="field-select" name="eduDegree'+n+'" required><option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option><option>大专</option></select><div class="error-msg">请选择学历</div></div>'+
+      '<div class="field"><label class="field-label">学校全称 <span style="color:var(--error)">*</span></label><input class="field-input" name="eduSchool'+n+'" placeholder="北京大学" required><div class="error-msg">请填写学校</div></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+      '<div class="field"><label class="field-label">专业全称</label><input class="field-input" name="eduMajor'+n+'" placeholder="计算机科学与技术"></div>'+
+      '<div class="field"><label class="field-label">就读时间</label><input class="field-input" name="eduTime'+n+'" placeholder="2020.09 - 2024.06"></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+      '<div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" name="eduGpa'+n+'" placeholder="3.7/4.0，专业前15%"></div>'+
+      '<div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" name="eduHonors'+n+'" placeholder="国家奖学金（2022）"></div>'+
+    '</div>'+
+    '<div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses'+n+'" placeholder="数据结构、操作系统、机器学习"></div>'+
+  '</div>';
 }
 function addEducation() { eduCount++; document.getElementById('educationContainer').insertAdjacentHTML('beforeend', eduHTML(eduCount)); bindSection(document.querySelector('[data-education="'+eduCount+'"]')); updateProgress(); autoSave(); }
 function removeEducation(n) { var el=document.querySelector('[data-education="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
 
 // ── Campus ──
 function campusHTML(n) {
-  return `<div class="sub-section" data-campus="${n}">
-    <div class="sub-section-title"><span class="dot">经历 ${n}</span>${n>1?`<button class="btn-remove" onclick="removeCampus(${n})">删除</button>`:''}</div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">活动/竞赛名称</label><input class="field-input" name="camName${n}" placeholder="校学生会外联部 / 数学建模竞赛"></div>
-      <div class="field"><label class="field-label">级别</label><select class="field-select" name="camLevel${n}"><option value="">请选择</option><option>校级</option><option>省级</option><option>国家级</option><option>国际级</option><option>不适用</option></select></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">时间</label><input class="field-input" name="camTime${n}" placeholder="2021.09 - 2022.06"></div>
-      <div class="field"><label class="field-label">你的角色</label><input class="field-input" name="camRole${n}" placeholder="干事 / 队长 / 组长"></div>
-    </div>
-    <div class="field"><label class="field-label">做了什么</label><textarea class="field-textarea" name="camDesc${n}" placeholder="描述具体做了什么，承担了什么责任"></textarea></div>
-    <div class="field"><label class="field-label">成果 / 收获</label><input class="field-input" name="camResult${n}" placeholder="拉到2万元赞助 / 获得二等奖"></div>
-  </div>`;
+  var delBtn = n>1 ? '<button class="btn-remove" onclick="removeCampus('+n+')">删除</button>' : '';
+  return '<div class="sub-section" data-campus="'+n+'">'+
+    '<div class="sub-section-title"><span class="dot">校园/竞赛经历 '+n+'</span>'+delBtn+'</div>'+
+    '<div class="field-row">'+
+      '<div class="field"><label class="field-label">活动/竞赛名称</label><input class="field-input" name="camName'+n+'" placeholder="校学生会外联部 / 数学建模竞赛"></div>'+
+      '<div class="field"><label class="field-label">级别</label><select class="field-select" name="camLevel'+n+'"><option value="">请选择</option><option>校级</option><option>省级</option><option>国家级</option><option>国际级</option><option>不适用</option></select></div>'+
+    '</div>'+
+    '<div class="field-row">'+
+      '<div class="field"><label class="field-label">时间</label><input class="field-input" name="camTime'+n+'" placeholder="2021.09 - 2022.06"></div>'+
+      '<div class="field"><label class="field-label">你的角色</label><input class="field-input" name="camRole'+n+'" placeholder="干事 / 队长 / 组长"></div>'+
+    '</div>'+
+    '<div class="field"><label class="field-label">做了什么</label><textarea class="field-textarea" name="camDesc'+n+'" placeholder="描述具体做了什么，承担了什么责任"></textarea></div>'+
+    '<div class="field"><label class="field-label">成果 / 收获</label><input class="field-input" name="camResult'+n+'" placeholder="拉到2万元赞助 / 获得二等奖"></div>'+
+  '</div>';
 }
 function addCampus() { campusCount++; document.getElementById('campusContainer').insertAdjacentHTML('beforeend', campusHTML(campusCount)); bindSection(document.querySelector('[data-campus="'+campusCount+'"]')); updateProgress(); autoSave(); }
 function removeCampus(n) { var el=document.querySelector('[data-campus="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
@@ -1182,7 +1184,13 @@ function submitForm() {
   const gc = n => Array.from(document.querySelectorAll(`[name="${n}"]:checked`)).map(e => e.value);
 
   s += `【基本信息】\n姓名：${q('name')} | 性别：${q('gender')} | 出生年月：${q('birth')}\n手机：${q('phone')} | 邮箱：${q('email')} | 微信：${q('wechat')}\n目标城市：${q('city')}\n\n`;
-  s += `【教育背景】\n学校：${q('school')} | 学历：${q('degree')} | 专业：${q('major')}\n时间：${q('eduTime')} | GPA/排名：${q('gpa')}\n荣誉：${q('honors')}\n课程：${q('courses')}\n\n`;
+  s += `【教育背景】\n`;
+  for (let i = 1; i <= eduCount; i++) {
+    var ee = document.querySelector('[data-education="'+i+'"]');
+    if (!ee) continue;
+    var dg = q('eduDegree'+i); if (!dg) continue;
+    s += `教育${i}：${dg} · ${q('eduSchool'+i)} · ${q('eduMajor'+i)} · ${q('eduTime'+i)}\nGPA：${q('eduGpa'+i)} | 荣誉：${q('eduHonors'+i)} | 课程：${q('eduCourses'+i)}\n\n`;
+  }
 
   s += `【实习经历】\n`;
   for (let i = 1; i <= internshipCount; i++) {
@@ -1200,8 +1208,16 @@ function submitForm() {
     s += `项目${i}：${pn} · ${q(`projTime${i}`)} · ${q(`projRole${i}`)}\n技术：${q(`projTech${i}`)}\n简介：${q(`projDesc${i}`)}\n成果：${q(`projResult${i}`)}\n贡献：${q(`projContrib${i}`)}\n\n`;
   }
 
-  s += `【校园活动】\n${q('activities') || '（未填写）'}\n\n`;
-  s += `【竞赛获奖】\n${q('competitions') || '（未填写）'}\n\n`;
+  s += '【校园活动 & 竞赛】\n';
+  var camFilled = false;
+  for (let i = 1; i <= campusCount; i++) {
+    var cc = document.querySelector('[data-campus="'+i+'"]');
+    if (!cc) continue;
+    var cn = q('camName'+i); if (!cn) continue;
+    camFilled = true;
+    s += `经历${i}：${cn} · ${q('camLevel'+i)} · ${q('camTime'+i)} · ${q('camRole'+i)}\n描述：${q('camDesc'+i)}\n成果：${q('camResult'+i)}\n\n`;
+  }
+  if (!camFilled) s += '（未填写）\n\n';
   s += `【技能】\n硬技能：${q('hardSkills') || '（未填写）'}\n语言：${q('language1')} | ${q('language2')}\n软技能：${gc('softSkill').join('、') || '（未勾选）'}\n\n`;
 
   s += `【求职意向】\n行业：${q('industry')} | 岗位：${q('roleType')}\n薪资：${q('salary')} | 实习：${q('internAccept')}\n`;
