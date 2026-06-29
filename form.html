@@ -673,36 +673,9 @@
     <div class="section-title">教育背景</div>
     <span class="section-status">待填写</span>
   </div>
-
-  <div class="field-row">
-    <div class="field">
-      <label class="field-label">学校全称 <span style="color:var(--error)">*</span></label>
-      <input class="field-input" type="text" name="school" placeholder="北京大学" required>
-      <div class="error-msg">请填写学校名称</div>
-    </div>
-    <div class="field">
-      <label class="field-label">学历 <span style="color:var(--error)">*</span></label>
-      <select class="field-select" name="degree" required>
-        <option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option>
-      </select>
-      <div class="error-msg">请选择学历</div>
-    </div>
-  </div>
-
-  <div class="field-row">
-    <div class="field"><label class="field-label">专业全称</label><input class="field-input" type="text" name="major" placeholder="计算机科学与技术"></div>
-    <div class="field"><label class="field-label">就读时间</label><input class="field-input" type="text" name="eduTime" placeholder="2020.09 - 2024.06"></div>
-  </div>
-
-  <div class="field-row">
-    <div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" type="text" name="gpa" placeholder="3.7/4.0，专业前 15%"></div>
-    <div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" type="text" name="honors" placeholder="国家奖学金（2022）"></div>
-  </div>
-
-  <div class="field">
-    <label class="field-label">相关课程 <span class="field-hint">（选 3-5 门与求职方向最相关的）</span></label>
-    <input class="field-input" type="text" name="courses" placeholder="数据结构、操作系统、机器学习">
-  </div>
+  <p class="section-desc">请至少填写一段教育经历。如有多个学历（本科+硕士等），请分别添加。</p>
+  <div id="educationContainer"></div>
+  <button class="btn-add" onclick="addEducation()">+ 添加一段教育经历</button>
 </div>
 
 <!-- ═══ 3. 实习经历 ═══ -->
@@ -730,21 +703,15 @@
 </div>
 
 <!-- ═══ 5. 校园 & 竞赛 ═══ -->
-<div class="section" data-section="campus">
+<div class="section" data-section="campus2">
   <div class="section-header">
     <div class="section-num">5</div>
     <div class="section-title">校园活动 & 竞赛获奖</div>
     <span class="section-status">待填写</span>
   </div>
-
-  <div class="field">
-    <label class="field-label">校园活动 & 社团经历</label>
-    <textarea class="field-textarea" name="activities" placeholder="活动名称 · 时间 · 你的角色 · 做了什么 · 成果/收获&#10;&#10;示例：校学生会外联部 · 2021-2022 · 干事 · 为校庆拉到2万元赞助"></textarea>
-  </div>
-  <div class="field">
-    <label class="field-label">竞赛 & 获奖</label>
-    <textarea class="field-textarea" name="competitions" placeholder="奖项名称 · 时间 · 级别（校/省/国家/国际）· 排名&#10;&#10;示例：全国大学生数学建模竞赛 · 2022.09 · 国家级 · 二等奖"></textarea>
-  </div>
+  <p class="section-desc">包括社团、学生会、志愿活动、竞赛等。可添加多条。</p>
+  <div id="campusContainer"></div>
+  <button class="btn-add" onclick="addCampus()">+ 添加一段校园/竞赛经历</button>
 </div>
 
 <!-- ═══ 6. 技能 ═══ -->
@@ -905,7 +872,7 @@ let internshipCount = 0;
 let projectCount = 0;
 let jdCount = 0;
 let selectedPkg = '';
-const AUTO_SAVE_KEY = 'resume_studio_form_v2';
+const AUTO_SAVE_KEY = 'resume_studio_form_v3';
 
 // ═══════════════════════════════════
 // HTML TEMPLATES
@@ -1035,7 +1002,7 @@ function updateProgress() {
     else { section.classList.remove('completed'); }
   });
 
-  const overallPct = completed / 8;
+  const overallPct = completed / 9;
   document.getElementById('progressFill').style.width = (overallPct * 100) + '%';
   document.getElementById('progressPct').textContent = Math.round(overallPct * 100) + '%';
 
@@ -1071,6 +1038,8 @@ function autoSave() {
   data._ic = internshipCount;
   data._pc = projectCount;
   data._jc = jdCount;
+  data._ec = eduCount;
+  data._cc = campusCount;
   data._ts = Date.now();
 
   localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(data));
@@ -1089,6 +1058,8 @@ function restoreForm() {
   internshipCount = data._ic || 0;
   projectCount = data._pc || 0;
   jdCount = data._jc || 0;
+  eduCount = data._ec || 0;
+  campusCount = data._cc || 0;
 
   const ic = document.getElementById('internshipContainer');
   const pc = document.getElementById('projectContainer');
@@ -1122,7 +1093,8 @@ function validateForm() {
   let valid = true;
   let firstError = null;
   document.querySelectorAll('[required]').forEach(el => {
-    const err = el.closest('.field')?.querySelector('.error-msg');
+    const parent = el.closest('.field');
+    const err = parent ? parent.querySelector('.error-msg') : null;
     if (!el.value.trim()) {
       el.classList.add('error');
       if (err) err.classList.add('show');
@@ -1133,7 +1105,21 @@ function validateForm() {
       if (err) err.classList.remove('show');
     }
   });
-  if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (firstError) {
+    // Find the section containing the error
+    var section = firstError.closest('.section');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    // Flash the section
+    if (section) {
+      section.style.borderColor = '#ef4444';
+      section.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+      setTimeout(function(){ section.style.borderColor = ''; section.style.boxShadow = ''; }, 2000);
+    }
+  }
   return valid;
 }
 
@@ -1254,21 +1240,27 @@ function showToast(msg) {
 
 document.addEventListener('DOMContentLoaded', () => {
   // Add first items
+  addEducation();
   addInternship();
   addProject();
+  addCampus();
   addJD();
 
   bindAll();
 
   // Restore
   if (localStorage.getItem(AUTO_SAVE_KEY)) {
+    document.getElementById('educationContainer').innerHTML = '';
     document.getElementById('internshipContainer').innerHTML = '';
     document.getElementById('projectContainer').innerHTML = '';
+    document.getElementById('campusContainer').innerHTML = '';
     document.getElementById('jdContainer').innerHTML = '';
-    internshipCount = 0; projectCount = 0; jdCount = 0;
+    eduCount = 0; internshipCount = 0; projectCount = 0; campusCount = 0; jdCount = 0;
     restoreForm();
+    if (eduCount === 0) addEducation();
     if (internshipCount === 0) addInternship();
     if (projectCount === 0) addProject();
+    if (campusCount === 0) addCampus();
     if (jdCount === 0) addJD();
   }
 
