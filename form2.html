@@ -408,7 +408,7 @@
 
   .btn:hover { background: #2d3348; }
   .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.35; pointer-events: none; }
+  .btn:disabled { opacity: 0.4; } .btn.ready { opacity: 1; background: #e8614c; }
 
   /* ── RESULT MODAL ── */
   .modal-overlay {
@@ -830,7 +830,7 @@ window.onerror = function(msg, url, line, col, err) {
     <label><input type="checkbox" id="confirm1"> 我确认以上信息真实准确</label>
     <label><input type="checkbox" id="confirm2"> 我理解填写越详细 = 简历效果越好</label>
   </div>
-  <button class="btn" id="submitBtn" disabled onclick="submitForm()">提交信息，查看套餐推荐</button>
+  <button class="btn" id="submitBtn" onclick="handleSubmit()">提交信息，查看套餐推荐</button>
 </div>
 
 </div>
@@ -1124,10 +1124,13 @@ function updateProgress() {
   // Enable submit
   const conf1 = document.getElementById('confirm1').checked;
   const conf2 = document.getElementById('confirm2').checked;
-  const hasContent = document.querySelectorAll('.field-input, .field-textarea').length > 0 &&
-                     !!document.querySelector('[name="name"]')?.value.trim() &&
-                     !!document.querySelector('[name="school"]')?.value.trim();
-  document.getElementById('submitBtn').disabled = !(conf1 && conf2 && hasContent);
+  const hasContent = document.querySelectorAll('.field-input.filled, .field-textarea.filled').length > 5;
+  var btn = document.getElementById('submitBtn');
+  if (conf1 && conf2 && hasContent) {
+    btn.classList.add('ready');
+  } else {
+    btn.classList.remove('ready');
+  }
 }
 
 ['confirm1','confirm2'].forEach(id => {
@@ -1241,6 +1244,27 @@ function validateForm() {
 // ═══════════════════════════════════
 // SUBMIT
 // ═══════════════════════════════════
+
+function handleSubmit() {
+  var btn = document.getElementById('submitBtn');
+  if (!btn.classList.contains('ready')) {
+    // Not ready: validate and scroll to error, or show what's missing
+    var allChecked = document.getElementById('confirm1').checked && document.getElementById('confirm2').checked;
+    if (!allChecked) {
+      showToast('请先勾选底部两个确认项');
+      document.querySelector('.submit-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    var filled = document.querySelectorAll('.field-input.filled, .field-textarea.filled').length;
+    if (filled < 6) {
+      showToast('请至少填写姓名、学校和几段经历');
+    }
+    // Also try validateForm
+    validateForm();
+    return;
+  }
+  submitForm();
+}
 
 function submitForm() {
   if (!validateForm()) {
