@@ -69,7 +69,7 @@ function loadData(){
       h+='<td><span class="badge '+tc+'">'+tl+'</span></td>';
       h+='<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+item.key.replace('submissions/','').substring(0,35)+'</td>';
       h+='<td>';
-      h+='<a class="btn btn-view" onclick="viewDetail(\''+item.key+'\',this)">查看</a>';
+      if(isC){ h+='<a class="btn btn-view" onclick="viewDetail(\''+item.key+'\'',this)">查看</a>'; }
       h+='<a class="btn btn-md" onclick="downloadMD(\''+item.key+'\')">下载 MD</a>';
       h+='<a class="btn btn-docx" onclick="downloadDOCX(\''+item.key+'\')">下载 DOCX</a>';
       h+='</td></tr>';
