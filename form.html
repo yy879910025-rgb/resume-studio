@@ -1010,12 +1010,25 @@ function handlePhoto(input) {
     reader.onload = function(e) {
       dataInput.value = e.target.result;
       preview.style.display = 'block';
-      preview.innerHTML = '<img src="'+e.target.result+'" style="max-width:120px;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;"><br><span style="font-size:12px;color:#6b7280;">'+input.files[0].name+' ('+Math.round(input.files[0].size/1024)+'KB)</span>';
+      preview.innerHTML = '<div style="position:relative;display:inline-block;">'+
+        '<img src="'+e.target.result+'" style="max-width:120px;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;">'+
+        '<span onclick="removePhoto()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;background:#ef4444;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;box-shadow:0 2px 4px rgba(0,0,0,0.15);">×</span>'+
+        '</div>'+
+        '<br><span style="font-size:12px;color:#6b7280;">'+input.files[0].name+' ('+Math.round(input.files[0].size/1024)+'KB)</span>';
       updateProgress();
       autoSave();
     };
     reader.readAsDataURL(input.files[0]);
   }
+}
+function removePhoto() {
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoPreview').innerHTML = '';
+  document.getElementById('photoData').value = '';
+  var fileInput = document.querySelector('input[name="photo"]');
+  if (fileInput) fileInput.value = '';
+  updateProgress();
+  autoSave();
 }
 
 // ═══════════════════════════════════
