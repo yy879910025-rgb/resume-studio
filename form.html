@@ -664,6 +664,12 @@
     <label class="field-label">目标城市</label>
     <input class="field-input" type="text" name="city" placeholder="北京 / 上海 / 深圳 / 不限">
   </div>
+  <div class="field">
+    <label class="field-label">证件照 <span class="field-hint">（可选，用于简历头像）</span></label>
+    <input class="field-input" type="file" name="photo" accept="image/*" style="padding:8px;" onchange="handlePhoto(this)">
+    <input type="hidden" name="photoData" id="photoData">
+    <div id="photoPreview" style="margin-top:8px;display:none;"></div>
+  </div>
 </div>
 
 <!-- ═══ 2. 教育背景 ═══ -->
@@ -953,45 +959,64 @@ function removeJD(n) {
 
 // ── Education ──
 function eduHTML(n) {
-  return `<div class="sub-section" data-education="${n}">
-    <div class="sub-section-title"><span class="dot">教育经历 ${n}</span>${n>1?`<button class="btn-remove" onclick="removeEducation(${n})">删除</button>`:''}</div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">学历 <span style="color:var(--error)">*</span></label><select class="field-select" name="eduDegree${n}" required><option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option><option>大专</option></select><div class="error-msg">请选择学历</div></div>
-      <div class="field"><label class="field-label">学校全称 <span style="color:var(--error)">*</span></label><input class="field-input" name="eduSchool${n}" placeholder="北京大学" required><div class="error-msg">请填写学校</div></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">专业全称</label><input class="field-input" name="eduMajor${n}" placeholder="计算机科学与技术"></div>
-      <div class="field"><label class="field-label">就读时间</label><input class="field-input" name="eduTime${n}" placeholder="2020.09 - 2024.06"></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" name="eduGpa${n}" placeholder="3.7/4.0，专业前15%"></div>
-      <div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" name="eduHonors${n}" placeholder="国家奖学金（2022）"></div>
-    </div>
-    <div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses${n}" placeholder="数据结构、操作系统、机器学习"></div>
-  </div>`;
+  var del = n>1 ? '<button class="btn-remove" onclick="removeEducation('+n+')">删除</button>' : '';
+  return '<div class="sub-section" data-education="'+n+'">' +
+    '<div class="sub-section-title"><span class="dot">教育经历 '+n+'</span>'+del+'</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">学历 <span style="color:var(--error)">*</span></label><select class="field-select" name="eduDegree'+n+'" required><option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option><option>大专</option></select><div class="error-msg">请选择学历</div></div>' +
+      '<div class="field"><label class="field-label">学校全称 <span style="color:var(--error)">*</span></label><input class="field-input" name="eduSchool'+n+'" placeholder="北京大学" required><div class="error-msg">请填写学校</div></div>' +
+    '</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">专业全称</label><input class="field-input" name="eduMajor'+n+'" placeholder="计算机科学与技术"></div>' +
+      '<div class="field"><label class="field-label">就读时间</label><input class="field-input" name="eduTime'+n+'" placeholder="2020.09 - 2024.06"></div>' +
+    '</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" name="eduGpa'+n+'" placeholder="3.7/4.0，专业前15%"></div>' +
+      '<div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" name="eduHonors'+n+'" placeholder="国家奖学金（2022）"></div>' +
+    '</div>' +
+    '<div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses'+n+'" placeholder="数据结构、操作系统、机器学习"></div>' +
+  '</div>';
 }
 function addEducation() { eduCount++; document.getElementById('educationContainer').insertAdjacentHTML('beforeend', eduHTML(eduCount)); bindSection(document.querySelector('[data-education="'+eduCount+'"]')); updateProgress(); autoSave(); }
 function removeEducation(n) { var el=document.querySelector('[data-education="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
 
 // ── Campus ──
 function campusHTML(n) {
-  return `<div class="sub-section" data-campus="${n}">
-    <div class="sub-section-title"><span class="dot">校园/竞赛经历 ${n}</span>${n>1?`<button class="btn-remove" onclick="removeCampus(${n})">删除</button>`:''}</div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">活动/竞赛名称</label><input class="field-input" name="camName${n}" placeholder="校学生会外联部 / 数学建模竞赛"></div>
-      <div class="field"><label class="field-label">级别</label><select class="field-select" name="camLevel${n}"><option value="">请选择</option><option>校级</option><option>省级</option><option>国家级</option><option>国际级</option><option>不适用</option></select></div>
-    </div>
-    <div class="field-row">
-      <div class="field"><label class="field-label">时间</label><input class="field-input" name="camTime${n}" placeholder="2021.09 - 2022.06"></div>
-      <div class="field"><label class="field-label">你的角色</label><input class="field-input" name="camRole${n}" placeholder="干事 / 队长 / 组长"></div>
-    </div>
-    <div class="field"><label class="field-label">做了什么</label><textarea class="field-textarea" name="camDesc${n}" placeholder="描述具体做了什么，承担了什么责任"></textarea></div>
-    <div class="field"><label class="field-label">成果 / 收获</label><input class="field-input" name="camResult${n}" placeholder="拉到2万元赞助 / 获得二等奖"></div>
-  </div>`;
+  var del = n>1 ? '<button class="btn-remove" onclick="removeCampus('+n+')">删除</button>' : '';
+  return '<div class="sub-section" data-campus="'+n+'">' +
+    '<div class="sub-section-title"><span class="dot">校园/竞赛经历 '+n+'</span>'+del+'</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">活动/竞赛名称</label><input class="field-input" name="camName'+n+'" placeholder="校学生会外联部 / 数学建模竞赛"></div>' +
+      '<div class="field"><label class="field-label">级别</label><select class="field-select" name="camLevel'+n+'"><option value="">请选择</option><option>校级</option><option>省级</option><option>国家级</option><option>国际级</option><option>不适用</option></select></div>' +
+    '</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">时间</label><input class="field-input" name="camTime'+n+'" placeholder="2021.09 - 2022.06"></div>' +
+      '<div class="field"><label class="field-label">你的角色</label><input class="field-input" name="camRole'+n+'" placeholder="干事 / 队长 / 组长"></div>' +
+    '</div>' +
+    '<div class="field"><label class="field-label">做了什么</label><textarea class="field-textarea" name="camDesc'+n+'" placeholder="描述具体做了什么，承担了什么责任"></textarea></div>' +
+    '<div class="field"><label class="field-label">成果 / 收获</label><input class="field-input" name="camResult'+n+'" placeholder="拉到2万元赞助 / 获得二等奖"></div>' +
+  '</div>';
 }
 
 function addCampus() { campusCount++; document.getElementById('campusContainer').insertAdjacentHTML('beforeend', campusHTML(campusCount)); bindSection(document.querySelector('[data-campus="'+campusCount+'"]')); updateProgress(); autoSave(); }
 function removeCampus(n) { var el=document.querySelector('[data-campus="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
+
+// ── Photo handler ──
+function handlePhoto(input) {
+  var preview = document.getElementById('photoPreview');
+  var dataInput = document.getElementById('photoData');
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      dataInput.value = e.target.result;
+      preview.style.display = 'block';
+      preview.innerHTML = '<img src="'+e.target.result+'" style="max-width:120px;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;"><br><span style="font-size:12px;color:#6b7280;">'+input.files[0].name+' ('+Math.round(input.files[0].size/1024)+'KB)</span>';
+      updateProgress();
+      autoSave();
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
 
 // ═══════════════════════════════════
 // BINDING
