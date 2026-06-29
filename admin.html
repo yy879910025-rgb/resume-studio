@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 · 简历工作室</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f3f2ef; color: #1a1f2e; padding: 20px; }
+  .container { max-width: 900px; margin: 0 auto; }
+  header { background: #1a1f2e; color: #fff; padding: 20px 24px; border-radius: 12px; margin-bottom: 24px; }
+  header h1 { font-size: 1.3rem; } header p { font-size: .8rem; opacity: .5; margin-top: 4px; }
+  .pwd-box { background: #fff; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .pwd-box input { padding: 10px 16px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 1rem; width: 200px; font-family: inherit; }
+  .pwd-box button { padding: 10px 24px; background: #1a1f2e; color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; margin-left: 8px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  th { text-align: left; padding: 12px 16px; background: #f9fafb; font-size: .75rem; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; }
+  td { padding: 10px 16px; border-bottom: 1px solid #f3f4f6; font-size: .85rem; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: .7rem; font-weight: 700; }
+  .badge-contact { background: #dbeafe; color: #1d4ed8; } .badge-form { background: #fef3c7; color: #92400e; }
+  a.view { color: #e8614c; text-decoration: none; font-weight: 600; font-size: .82rem; cursor: pointer; }
+  .detail { display: none; background: #f9fafb; padding: 16px; margin: 0 16px 12px; border-radius: 8px; font-size: .82rem; line-height: 1.7; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+  .detail.show { display: block; }
+  .refresh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .refresh span { font-size: .85rem; color: #6b7280; } a.refresh-btn { color: #e8614c; font-size: .85rem; text-decoration: none; font-weight: 600; }
+  .empty { text-align: center; padding: 60px 20px; color: #6b7280; }
+  .loading { text-align: center; padding: 40px; color: #6b7280; }
+  .error { background: #fef2f2; color: #dc2626; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; }
+  footer { text-align: center; padding: 40px; color: #c4c8cf; font-size: .75rem; }
+</style></head>
+<body><div class="container">
+<header><h1>后台管理</h1><p>客户提交记录 · 简历工作室</p></header>
+<div id="loginBox" class="pwd-box"><h3 style="margin-bottom:16px;">🔒 请输入管理密码</h3><input id="pwdInput" type="password" placeholder="密码"><button onclick="login()">进入</button><p id="loginError" style="color:#dc2626;font-size:.85rem;margin-top:12px;display:none;">密码错误</p></div>
+<div id="mainBox" style="display:none;">
+<div class="refresh"><span id="countLabel"></span><a class="refresh-btn" href="javascript:loadData()">🔄 刷新</a></div>
+<div id="errorBox" class="error" style="display:none;"></div>
+<div id="loadingBox" class="loading">加载中...</div>
+<table id="dataTable" style="display:none;"><thead><tr><th>时间</th><th>类型</th><th>摘要</th><th>操作</th></tr></thead><tbody id="tableBody"></tbody></table>
+<div id="emptyBox" class="empty" style="display:none;">暂无提交记录</div></div>
+<footer>简历工作室 · 管理后台</footer></div>
+<script>
+const API='https://1448451563-12cwae2d5r.ap-guangzhou.tencentscf.com/api';
+let PWD='';
+function login(){PWD=document.getElementById('pwdInput').value;document.getElementById('loginError').style.display='none';loadData();}
+function loadData(){
+  if(!PWD)return;
+  document.getElementById('loadingBox').style.display='block';document.getElementById('dataTable').style.display='none';document.getElementById('emptyBox').style.display='none';document.getElementById('errorBox').style.display='none';
+  fetch(API+'/list?pwd='+PWD).then(r=>{if(r.status===403){document.getElementById('loginError').style.display='block';throw new Error('unauth');}return r.json();}).then(data=>{
+    if(data.error)throw new Error(data.error);
+    document.getElementById('loginBox').style.display='none';document.getElementById('mainBox').style.display='block';document.getElementById('loadingBox').style.display='none';
+    if(!data.length){document.getElementById('emptyBox').style.display='block';return;}
+    document.getElementById('countLabel').textContent='共 '+data.length+' 条记录';document.getElementById('dataTable').style.display='table';
+    let h='';data.forEach((item,i)=>{
+      let tl=item.key.includes('contact')?'联系我们':'信息收集表';
+      let tc=item.key.includes('contact')?'badge-contact':'badge-form';
+      h+='<tr><td>'+(item.time||'').substring(0,19)+'</td><td><span class="badge '+tc+'">'+tl+'</span></td><td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+item.key.replace('submissions/','').substring(0,50)+'</td><td><a class="view" onclick="loadDetail(\''+item.key+'\','+i+')">查看</a></td></tr>';
+      h+='<tr id="detail-'+i+'" style="display:none;"><td colspan="4"><div class="detail" id="dc-'+i+'"></div></td></tr>';
+    });
+    document.getElementById('tableBody').innerHTML=h;
+  }).catch(e=>{document.getElementById('loadingBox').style.display='none';if(e.message!=='unauth'){document.getElementById('errorBox').textContent='加载失败: '+e.message;document.getElementById('errorBox').style.display='block';}});
+}
+function loadDetail(key,i){
+  let row=document.getElementById('detail-'+i),dc=document.getElementById('dc-'+i);
+  if(row.style.display==='table-row'){row.style.display='none';return;}
+  row.style.display='table-row';dc.textContent='加载中...';
+  fetch(API+'/detail/'+key+'?pwd='+PWD).then(r=>r.json()).then(d=>{
+    let t='';if(d.data){if(d.data.summary)t=d.data.summary;else Object.keys(d.data).forEach(k=>{t+=k+': '+d.data[k]+'\n'});}
+    dc.textContent=t||JSON.stringify(d,null,2);
+  }).catch(e=>{dc.textContent='失败: '+e.message;});
+}
+document.getElementById('pwdInput').addEventListener('keydown',function(e){if(e.key==='Enter')login();});
+if(location.search.includes('pwd=')){PWD=new URLSearchParams(location.search).get('pwd');document.getElementById('pwdInput').value=PWD;loadData();}
+</script></body></html>
