@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简历工作室 · 服务套餐</title>
+<style>
+  :root {
+    --ink: #1a1f2e;
+    --paper: #fafaf8;
+    --accent: #e8614c;
+    --accent-hover: #d04a35;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --highlight: #fef3c7;
+    --highlight-border: #f59e0b;
+    --card-bg: #fff;
+    --shadow-sm: 0 1px 3px rgba(26,31,46,0.06);
+    --shadow-md: 0 4px 16px rgba(26,31,46,0.08);
+    --shadow-lg: 0 12px 32px rgba(26,31,46,0.12);
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    opacity: 0;
+    animation: bodyIn 0.5s ease forwards;
+  }
+
+  @keyframes bodyIn { to { opacity: 1; } }
+
+  /* ── Nav ── */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(250,250,248,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s;
+  }
+
+  .nav.hidden { transform: translateY(-100%); }
+
+  .nav-brand {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  @media (max-width: 600px) {
+    .nav-links { gap: 14px; }
+    .nav-links a { font-size: 0.78rem; }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 56px;
+    background: linear-gradient(175deg, #f0ede6 0%, var(--paper) 100%);
+  }
+
+  .hero-label {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    background: rgba(232,97,76,0.08);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.1s ease forwards;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 600px;
+    margin: 0 auto 12px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.2s ease forwards;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+  }
+
+  .hero h1 em::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; left: 0; right: 0;
+    height: 6px;
+    background: rgba(232,97,76,0.15);
+    border-radius: 2px;
+    z-index: -1;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto 32px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.3s ease forwards;
+  }
+
+  .hero-stats {
+    display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.4s ease forwards;
+  }
+
+  .hero-stat { text-align: center; }
+  .hero-stat-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    transition: color 0.3s;
+  }
+  .hero-stat:hover .hero-stat-num { color: var(--accent); }
+  .hero-stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Section titles ── */
+  .section-header {
+    text-align: center;
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .section-header.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .section-header h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .section-header p { color: var(--muted); font-size: 0.95rem; }
+
+  /* ── Process ── */
+  .process-section { padding: 64px 24px; }
+  .process {
+    max-width: 880px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .process-step {
+    text-align: center;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .process-step.visible { opacity: 1; transform: translateY(0); }
+
+  .process-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 22px; right: -10px;
+    width: 20px; height: 1.5px;
+    background: var(--border);
+  }
+
+  .process-icon {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--muted);
+    transition: background 0.3s, color 0.3s, transform 0.3s;
+  }
+
+  .process-step:hover .process-icon {
+    background: var(--ink);
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  .process-step h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+  .process-step p { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+  @media (max-width: 860px) {
+    .process { grid-template-columns: repeat(2, 1fr); gap: 32px 20px; }
+    .process-step:nth-child(2)::after { display: none; }
+  }
+  @media (max-width: 480px) {
+    .process { grid-template-columns: 1fr; gap: 24px; }
+    .process-step::after { display: none; }
+  }
+
+  /* ── Pricing ── */
+  .pricing-section {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 24px 24px 80px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    position: relative;
+    transition: transform 0.25s, box-shadow 0.25s;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s, border-color 0.25s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card--featured {
+    border-color: var(--highlight-border);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(180deg, #fffdf7 0%, #fff 30%);
+  }
+
+  .card--featured::before {
+    content: '最受欢迎';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--highlight);
+    color: #92400e;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--highlight-border);
+    white-space: nowrap;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+  }
+
+  .card-name { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
+  .card-price {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .card-price-unit { font-size: 0.85rem; color: var(--muted); font-weight: 500; margin-bottom: 24px; }
+
+  .card-delivery {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .card-features { list-style: none; border-top: 1px solid var(--border); padding-top: 20px; }
+
+  .card-features li {
+    padding: 8px 0;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+
+  .card-features li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    margin-top: 2px;
+  }
+
+  .card-features li.yes::before {
+    background: #ecfdf5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .card-features li.no {
+    color: #c4c8cf;
+  }
+
+  .card-features li.no::before {
+    background: #f9fafb;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23d1d5db' stroke-width='2' stroke-linecap='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .card-cta {
+    display: block;
+    text-align: center;
+    margin-top: 24px;
+    padding: 12px 0;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .card-cta:active { transform: scale(0.97); }
+
+  .card--featured .card-cta {
+    background: var(--ink);
+    color: #fff;
+  }
+  .card--featured .card-cta:hover { background: #2d3348; }
+
+  .card:not(.card--featured) .card-cta {
+    background: #f3f4f6;
+    color: var(--ink);
+  }
+  .card:not(.card--featured) .card-cta:hover { background: #e5e7eb; }
+
+  @media (max-width: 860px) {
+    .cards { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  }
+
+  /* ── FAQ Accordion ── */
+  .faq-section { padding: 0 24px 80px; }
+  .faq {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 20px 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    transition: color 0.15s;
+  }
+
+  .faq-q:hover { color: var(--accent); }
+
+  .faq-arrow {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    transition: transform 0.3s;
+    color: var(--muted);
+  }
+
+  .faq-item.open .faq-arrow { transform: rotate(180deg); }
+  .faq-item.open .faq-q { color: var(--accent); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.35s ease;
+  }
+
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding-bottom: 20px;
+  }
+
+  .faq-a p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  /* ── Bottom CTA ── */
+  .bottom-cta {
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .bottom-cta h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .bottom-cta h2.visible { opacity: 1; transform: translateY(0); }
+
+  .bottom-cta p {
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 32px;
+    font-size: 0.95rem;
+  }
+
+  .bottom-cta .btn {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 14px 40px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-cta .btn:hover { background: var(--accent-hover); }
+  .bottom-cta .btn:active { transform: scale(0.96); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    z-index: 999;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  @media print {
+    body { background: white; animation: none; opacity: 1; }
+    .nav, .bottom-cta, .card-cta, .footer, .toast { display: none; }
+    .hero { background: white; padding: 24px; }
+    .cards { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card { box-shadow: none; border: 1px solid #ccc; padding: 16px 12px; opacity: 1; transform: none; }
+    .card:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-brand">简历工作室</a>
+  <ul class="nav-links">
+    <li><a href="#process">流程</a></li>
+    <li><a href="#pricing">套餐</a></li>
+    <li><a href="#faq">常见问题</a></li>
+    <li><a href="#cta">咨询</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero-label">简历工作室</div>
+  <h1>你的第一份工作，<br>值得一份<em>好简历</em></h1>
+  <p class="hero-sub">AI 定制 + 人工审核 · 应届生专属 · 不只是简历，是从投递到面试的全流程准备</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="12">0</div>
+      <div class="hero-stat-label">个专业 AI Skill</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">1-2 天</div>
+      <div class="hero-stat-label">极速交付</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" data-count="3">0</div>
+      <div class="hero-stat-label">倍面试邀约提升</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ PROCESS ═══ -->
+<section class="process-section" id="process">
+  <div class="section-header"><h2>4 步，搞定你的求职敲门砖</h2></div>
+  <div class="process">
+    <div class="process-step">
+      <div class="process-icon">1</div>
+      <h3>填写信息表</h3>
+      <p>花 15 分钟填好在线表单，把你的经历全部倒出来</p>
+    </div>
+    <div class="process-step">
+      <div class="process-icon">2</div>
+      <h3>需求分析</h3>
+      <p>根据你的背景和目标 JD，评估匹配度，制定投递策略</p>
+    </div>
+    <div class="process-step">
+      <div class="process-icon">3</div>
+      <h3>AI + 人工制作</h3>
+      <p>12 个专业 AI Skill 生成初稿，人工逐条审核润色</p>
+    </div>
+    <div class="process-step">
+      <div class="process-icon">4</div>
+      <h3>交付修改</h3>
+      <p>PDF + Word 双版本，免费修改，满意为止</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section class="pricing-section" id="pricing">
+  <div class="section-header"><h2>三档套餐，按需选择</h2><p>所有套餐均含 AI 生成 + 人工审核，质量不打折</p></div>
+
+  <div class="cards">
+    <!-- Basic -->
+    <div class="card">
+      <div class="card-name">🔵 基础版</div>
+      <div class="card-price">199<span style="font-size:1rem;font-weight:600;"> 元</span></div>
+      <div class="card-price-unit">一份专业简历，搞定投递</div>
+      <div class="card-delivery">🕐 1 个工作日交付</div>
+      <ul class="card-features">
+        <li class="yes">简历撰写（STAR 公式 + 量化表达）</li>
+        <li class="yes">ATS 合规优化（通过机器筛选）</li>
+        <li class="yes">专业排版，一页以内</li>
+        <li class="yes">PDF + Word 双版本</li>
+        <li class="no">JD 匹配分析</li>
+        <li class="no">公司级别推荐</li>
+        <li class="no">定制求职信</li>
+        <li class="no">钩子式面经</li>
+      </ul>
+      <button class="card-cta" onclick="selectPlan('基础版', 199)">选择基础版</button>
+    </div>
+
+    <!-- Standard -->
+    <div class="card card--featured">
+      <div class="card-name">🟢 标准版</div>
+      <div class="card-price">399<span style="font-size:1rem;font-weight:600;"> 元</span></div>
+      <div class="card-price-unit">简历 + 精准匹配，锁定目标</div>
+      <div class="card-delivery">🕐 1-2 个工作日交付</div>
+      <ul class="card-features">
+        <li class="yes">基础版全部内容</li>
+        <li class="yes">JD 深度解析（要求 + 关键词提取）</li>
+        <li class="yes">匹配度评分 + 公司级别推荐</li>
+        <li class="yes">投递策略建议（稳进/保守/冲一冲）</li>
+        <li class="yes">定制求职信</li>
+        <li class="yes">2 次免费修改</li>
+        <li class="no">钩子式面经</li>
+      </ul>
+      <button class="card-cta" onclick="selectPlan('标准版', 399)">选择标准版</button>
+    </div>
+
+    <!-- Premium -->
+    <div class="card">
+      <div class="card-name">🟣 进阶版</div>
+      <div class="card-price">699<span style="font-size:1rem;font-weight:600;"> 元</span></div>
+      <div class="card-price-unit">全流程护航，从简历到面试</div>
+      <div class="card-delivery">🕐 2-3 个工作日交付</div>
+      <ul class="card-features">
+        <li class="yes">标准版全部内容</li>
+        <li class="yes">钩子式简历（埋 6 类面试钩子）</li>
+        <li class="yes">配套面经（预测问题 + 答题框架）</li>
+        <li class="yes">1v1 深度沟通（挖掘隐藏亮点）</li>
+        <li class="yes">技术岗专项优化（如适用）</li>
+        <li class="yes">简历版本管理 + 归档</li>
+        <li class="yes">含 1v1 沟通 + 1 次修改</li>
+      </ul>
+      <button class="card-cta" onclick="selectPlan('进阶版', 699)">选择进阶版</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq-section" id="faq">
+  <div class="section-header"><h2>你可能想问</h2></div>
+  <div class="faq">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Q：你们和免费 AI 工具有什么区别？
+        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a"><p>免费工具可以帮你写简历，但它不知道 HR 真正想看什么，也不会针对具体 JD 做深度定制。我们有 12 个专业简历 Skill，加上人工审核去 AI 套话、做事实核查——这是纯 AI 做不到的。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Q：能保证我拿到面试或 Offer 吗？
+        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a"><p>不能，也不会做这个承诺。简历是你求职的敲门砖，最终结果取决于岗位竞争、面试表现等多种因素。我们能保证的是：你的简历会比 90% 的竞争者更专业。大多数客户改完后投递面试率提升 3 倍以上。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Q：你们会编造经历吗？
+        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a"><p>绝对不会。好的简历基于真实经历的优化和包装，不是编造。虚假经历在面试里一定会露馅，大厂还有背调，造假可能进黑名单。我们帮你把真实经历用最好的方式呈现，让你面试时也更有底气。</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Q：信息表太长了，不填可以吗？
+        <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-a"><p>填得越详细，我们能帮你展现的就越丰富。你觉得普通的经历，可能正是 HR 想看的。如果某部分确实没什么可写，可以先空着，我们在沟通中一起挖掘。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BOTTOM CTA ═══ -->
+<section class="bottom-cta" id="cta">
+  <h2>准备好让你的简历脱颖而出了吗？</h2>
+  <p>扫码或点击下方按钮，立即获取信息收集表<br>24 小时内免费分析 + 套餐推荐</p>
+  <button class="btn" onclick="openForm()">📝 立即填写信息收集表</button>
+</section>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast"></div>
+
+
+<!-- ═══ 联系我们 ═══ -->
+<section style="max-width:680px;margin:0 auto;padding:40px 24px 80px;">
+  <div class="section-header"><h2>联系我们</h2><p>留下联系方式，我们 24 小时内联系你</p></div>
+  <form id="contactForm" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:28px;box-shadow:0 1px 3px rgba(26,31,46,0.05);">
+    <div style="margin-bottom:16px;">
+      <label style="font-weight:600;font-size:0.9rem;display:block;margin-bottom:6px;">姓名 <span style="color:#e8614c">*</span></label>
+      <input name="contact_name" required style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.9rem;font-family:inherit;" placeholder="你的名字">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-weight:600;font-size:0.9rem;display:block;margin-bottom:6px;">微信号 <span style="color:#e8614c">*</span></label>
+      <input name="contact_wechat" required style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.9rem;font-family:inherit;" placeholder="方便我们联系你">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-weight:600;font-size:0.9rem;display:block;margin-bottom:6px;">想了解什么？</label>
+      <textarea name="contact_msg" style="width:100%;padding:10px 14px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.9rem;font-family:inherit;min-height:80px;" placeholder="例：我想做产品经理，有1段实习，帮我看看适合什么套餐"></textarea>
+    </div>
+    <button type="submit" id="contactBtn" style="width:100%;padding:14px;background:#1a1f2e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;">提交联系方式</button>
+    <p id="contactMsg" style="text-align:center;font-size:0.85rem;margin-top:12px;"></p>
+  </form>
+</section>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var btn = document.getElementById('contactBtn');
+  var msg = document.getElementById('contactMsg');
+  btn.textContent = '提交中...';
+  btn.disabled = true;
+  fetch('https://1448451563-12cwae2d5r.ap-guangzhou.tencentscf.com/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ type: 'contact', name: this.contact_name.value, wechat: this.contact_wechat.value, message: this.contact_msg.value })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.success) {
+      msg.innerHTML = '✅ 提交成功！我们会在 24 小时内通过微信联系你。';
+      msg.style.color = '#10b981';
+      document.getElementById('contactForm').reset();
+    } else {
+      msg.innerHTML = '⚠️ ' + res.message;
+      msg.style.color = '#ef4444';
+    }
+  }).catch(function() {
+    msg.innerHTML = '⚠️ 网络异常，请直接添加微信联系';
+    msg.style.color = '#ef4444';
+  }).finally(function() {
+    btn.textContent = '提交联系方式';
+    btn.disabled = false;
+  });
+});
+</script>
+
+<footer class="footer">
+  简历工作室 · 应届生专属 · AI定制+人工审核
+</footer>
+
+<script>
+// ── Scroll-triggered animations ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -30px 0px' });
+
+document.querySelectorAll('.section-header, .process-step, .card, .bottom-cta h2').forEach(el => {
+  observer.observe(el);
+});
+
+// ── Sticky nav hide/show ──
+let lastScroll = 0;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const now = window.scrollY;
+  if (now > 200 && now > lastScroll + 20) {
+    nav.classList.add('hidden');
+  } else if (now < lastScroll - 10) {
+    nav.classList.remove('hidden');
+  }
+  lastScroll = now;
+}, { passive: true });
+
+// ── Counter animation ──
+document.querySelectorAll('[data-count]').forEach(el => {
+  const target = parseInt(el.dataset.count);
+  let count = 0;
+  const duration = 800;
+  const step = Math.ceil(target / (duration / 20));
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const timer = setInterval(() => {
+          count += step;
+          if (count >= target) { count = target; clearInterval(timer); }
+          el.textContent = count;
+        }, 20);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counterObserver.observe(el);
+});
+
+// ── FAQ accordion ──
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+
+  // Close all
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+
+  // Toggle clicked
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── Plan selection ──
+function selectPlan(name, price) {
+  showToast(`已选择 ${name}（${price} 元）· 请联系微信获取信息表`);
+  setTimeout(() => {
+    document.getElementById('cta').scrollIntoView({ behavior: 'smooth' });
+  }, 500);
+}
+
+// ── Open form ──
+function openForm() {
+  showToast('请通过微信联系我获取信息收集表链接');
+  // In production, this would link to the form HTML
+  window.location.href = 'form.html';
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ── Smooth scroll for nav links ──
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ── Card hover glow on mobile ──
+if (window.matchMedia('(pointer: coarse)').matches) {
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('touchstart', function() {
+      this.style.transform = 'translateY(-4px)';
+      this.style.boxShadow = 'var(--shadow-lg)';
+    }, { passive: true });
+    card.addEventListener('touchend', function() {
+      this.style.transform = '';
+      this.style.boxShadow = '';
+    }, { passive: true });
+  });
+}
+</script>
+
+</body>
+</html>
