@@ -2,37 +2,40 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>后台管理 · 简历工作室</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f3f2ef;color:#1a1f2e;padding:20px}
-  .container{max-width:960px;margin:0 auto}
-  header{background:#1a1f2e;color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:24px}
-  header h1{font-size:1.3rem}header p{font-size:.8rem;opacity:.5;margin-top:4px}
-  .pwd-box{background:#fff;border-radius:12px;padding:40px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  .pwd-box input{padding:10px 16px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:1rem;width:200px}
-  .pwd-box button{padding:10px 24px;background:#1a1f2e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;margin-left:8px}
-  table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  th{text-align:left;padding:12px 16px;background:#f9fafb;font-size:.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:.05em}
-  td{padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:.85rem}
-  .badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:.7rem;font-weight:700}
-  .badge-contact{background:#dbeafe;color:#1d4ed8}.badge-form{background:#fef3c7;color:#92400e}
-  a.view{color:#e8614c;text-decoration:none;font-weight:600;font-size:.82rem;cursor:pointer;margin-right:12px}
-  .detail{background:#f9fafb;padding:16px;margin:0 16px 12px;border-radius:8px;font-size:.82rem;line-height:1.7;max-height:350px;overflow-y:auto}
-  .detail-card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px}
-  .detail-card .field{margin-bottom:10px}
-  .detail-card .field-label{font-size:.75rem;color:#6b7280;margin-bottom:2px}
-  .detail-card .field-value{font-size:.9rem}
-  .refresh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  .refresh span{font-size:.85rem;color:#6b7280}a.refresh-btn{color:#e8614c;font-size:.85rem;text-decoration:none;font-weight:600}
-  .empty{text-align:center;padding:60px 20px;color:#6b7280}
-  .loading{text-align:center;padding:40px;color:#6b7280}
-  .error{background:#fef2f2;color:#dc2626;padding:12px 16px;border-radius:8px;margin-bottom:16px}
-  .dl-btn{display:inline-block;padding:4px 12px;border-radius:4px;font-size:.75rem;font-weight:600;text-decoration:none;margin-right:8px;cursor:pointer}
-  .dl-md{background:#f3f4f6;color:#374151}.dl-json{background:#fef3c7;color:#92400e}
-  .dl-btn:hover{opacity:.8}
-  footer{text-align:center;padding:40px;color:#c4c8cf;font-size:.75rem}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f3f2ef;color:#1a1f2e;padding:20px}
+.container{max-width:960px;margin:0 auto}
+header{background:#1a1f2e;color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:24px}
+header h1{font-size:1.3rem}header p{font-size:.8rem;opacity:.5;margin-top:4px}
+.pwd-box{background:#fff;border-radius:12px;padding:40px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.pwd-box input{padding:10px 16px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:1rem;width:200px}
+.pwd-box button{padding:10px 24px;background:#1a1f2e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:1rem;cursor:pointer;margin-left:8px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+th{text-align:left;padding:12px 16px;background:#f9fafb;font-size:.7rem;color:#6b7280;text-transform:uppercase;letter-spacing:.05em}
+td{padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:.85rem}
+.badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:.7rem;font-weight:700}
+.badge-contact{background:#dbeafe;color:#1d4ed8}.badge-form{background:#fef3c7;color:#92400e}
+a.btn{display:inline-block;padding:3px 10px;border-radius:4px;font-size:.72rem;font-weight:600;text-decoration:none;cursor:pointer;margin-right:6px}
+.btn-view{color:#e8614c;border:1px solid #e8614c}
+.btn-md{background:#374151;color:#fff}
+.btn-docx{background:#2563eb;color:#fff}
+a.btn:hover{opacity:.8}
+.detail-row{display:none}
+.detail-row td{background:#f9fafb;padding:0 16px 12px}
+.detail-card{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px;font-size:.82rem;line-height:1.8;max-height:350px;overflow-y:auto}
+.detail-card .fl{margin-bottom:8px}
+.detail-card .fl-label{font-size:.72rem;color:#6b7280}
+.detail-card .fl-value{font-size:.9rem}
+.detail-card pre{white-space:pre-wrap;font-size:13px;line-height:1.6;margin:0}
+.refresh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.refresh span{font-size:.85rem;color:#6b7280}a.refresh-btn{color:#e8614c;font-size:.85rem;text-decoration:none;font-weight:600}
+.empty{text-align:center;padding:60px 20px;color:#6b7280}
+.loading{text-align:center;padding:40px;color:#6b7280}
+.error{background:#fef2f2;color:#dc2626;padding:12px 16px;border-radius:8px;margin-bottom:16px}
+footer{text-align:center;padding:40px;color:#c4c8cf;font-size:.75rem}
 </style></head>
 <body><div class="container">
 <header><h1>后台管理</h1><p>客户提交记录 · 简历工作室</p></header>
@@ -46,7 +49,7 @@
 <footer>简历工作室 · 管理后台</footer></div>
 <script>
 var API='https://1448451563-12cwae2d5r.ap-guangzhou.tencentscf.com/api';
-var PWD='';
+var PWD='',CACHE={};
 
 function login(){PWD=document.getElementById('pwdInput').value;document.getElementById('loginError').style.display='none';loadData();}
 function loadData(){
@@ -58,43 +61,105 @@ function loadData(){
     if(!data.length){document.getElementById('emptyBox').style.display='block';return;}
     document.getElementById('countLabel').textContent='共 '+data.length+' 条记录';document.getElementById('dataTable').style.display='table';
     var h='';data.forEach(function(item,i){
-      var isContact=item.key.indexOf('contact')>=0;
-      var tl=isContact?'联系我们':'信息收集表';
-      var tc=isContact?'badge-contact':'badge-form';
-      var base=item.key.replace('submissions/','').replace('.json','');
-      var mdKey='submissions/'+base+'.md';
-      var summary=base.substring(0,40);
-      h+='<tr><td>'+(item.time||'').substring(0,19)+'</td><td><span class="badge '+tc+'">'+tl+'</span></td><td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+summary+'</td>';
+      var isC=item.key.indexOf('contact')>=0;
+      var tl=isC?'联系我们':'信息收集表';
+      var tc=isC?'badge-contact':'badge-form';
+      h+='<tr>';
+      h+='<td>'+(item.time||'').substring(0,19)+'</td>';
+      h+='<td><span class="badge '+tc+'">'+tl+'</span></td>';
+      h+='<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+item.key.replace('submissions/','').substring(0,35)+'</td>';
       h+='<td>';
-      h+='<a class="view" onclick="loadDetail(\''+item.key+'\','+i+')">查看</a>';
-      h+='<a class="dl-btn dl-md" href="'+API.replace('/api','')+'/dl/'+mdKey+'?pwd='+PWD+'" target="_blank">下载 Markdown</a>';
-      h+='<a class="dl-btn dl-json" href="'+API.replace('/api','')+'/dl/'+item.key+'?pwd='+PWD+'" target="_blank">下载 JSON</a>';
+      h+='<a class="btn btn-view" onclick="viewDetail(\''+item.key+'\',this)">查看</a>';
+      h+='<a class="btn btn-md" onclick="downloadMD(\''+item.key+'\')">下载 MD</a>';
+      h+='<a class="btn btn-docx" onclick="downloadDOCX(\''+item.key+'\')">下载 DOCX</a>';
       h+='</td></tr>';
-      h+='<tr id="detail-'+i+'" style="display:none;"><td colspan="4"><div class="detail" id="dc-'+i+'"></div></td></tr>';
+      h+='<tr class="detail-row" id="dr-'+i+'"><td colspan="4"><div class="detail-card" id="dc-'+i+'"></div></td></tr>';
     });
     document.getElementById('tableBody').innerHTML=h;
   }).catch(function(e){document.getElementById('loadingBox').style.display='none';if(e.message!=='unauth'){document.getElementById('errorBox').textContent='加载失败: '+e.message;document.getElementById('errorBox').style.display='block';}});
 }
-function loadDetail(key,i){
-  var row=document.getElementById('detail-'+i),dc=document.getElementById('dc-'+i);
-  if(row.style.display==='table-row'){row.style.display='none';return;}
-  row.style.display='table-row';dc.innerHTML='加载中...';
-  fetch(API+'/detail/'+key+'?pwd='+PWD).then(function(r){return r.json();}).then(function(d){
-    var dd=d.data||{};
-    var isContact=d.type==='contact'||dd.type==='contact';
-    var h='<div class="detail-card">';
-    if(isContact){
-      h+='<div class="field"><div class="field-label">姓名</div><div class="field-value">'+(dd.name||'未填')+'</div></div>';
-      h+='<div class="field"><div class="field-label">微信号</div><div class="field-value" style="color:#e8614c;font-weight:700;font-size:1rem;">'+(dd.wechat||'未填')+'</div></div>';
-      h+='<div class="field"><div class="field-label">留言</div><div class="field-value">'+(dd.message||'无')+'</div></div>';
-    }else{
-      var summary=dd.summary||'';
-      h+='<pre style="white-space:pre-wrap;font-size:13px;line-height:1.6;margin:0">'+(summary||JSON.stringify(dd,null,2))+'</pre>';
-    }
-    h+='</div>';
-    dc.innerHTML=h;
-  }).catch(function(e){dc.innerHTML='<span style="color:#dc2626">加载失败: '+e.message+'</span>';});
+
+function getData(key,cb){
+  if(CACHE[key])return cb(CACHE[key]);
+  fetch(API+'/detail/'+key+'?pwd='+PWD).then(function(r){return r.json();}).then(function(d){CACHE[key]=d;cb(d);}).catch(function(e){cb(null,e.message);});
 }
+
+function viewDetail(key,btn){
+  var tr=btn.parentElement.parentElement.nextElementSibling;
+  if(tr.style.display==='table-row'){tr.style.display='none';return;}
+  tr.style.display='table-row';
+  var dc=tr.querySelector('.detail-card');
+  dc.innerHTML='加载中...';
+  getData(key,function(d,err){
+    if(err){dc.innerHTML='<span style="color:#dc2626">'+err+'</span>';return;}
+    var dd=d.data||{},isC=d.type==='contact'||dd.type==='contact';
+    var h='';
+    if(isC){
+      h+='<div class="fl"><div class="fl-label">姓名</div><div class="fl-value">'+(dd.name||'未填')+'</div></div>';
+      h+='<div class="fl"><div class="fl-label">微信号</div><div class="fl-value" style="color:#e8614c;font-weight:700;font-size:1.1rem;">'+(dd.wechat||'未填')+'</div></div>';
+      h+='<div class="fl"><div class="fl-label">留言</div><div class="fl-value">'+(dd.message||'无')+'</div></div>';
+    }else{
+      h+='<pre>'+(dd.summary||JSON.stringify(dd,null,2))+'</pre>';
+    }
+    dc.innerHTML=h;
+  });
+}
+
+function buildMD(d){
+  var dd=d.data||{},isC=d.type==='contact'||dd.type==='contact';
+  var lines=['# 简历工作室 · 客户提交','','**时间**：'+(d.time_human||''),'**类型**：'+(isC?'联系我们':'信息收集表'),''];
+  if(isC){
+    lines.push('## 联系方式','');
+    lines.push('- **姓名**：'+(dd.name||'未填'));
+    lines.push('- **微信号**：'+(dd.wechat||'未填'));
+    lines.push('- **留言**：'+(dd.message||'无'));
+  }else{
+    lines.push('## 客户信息','');
+    if(dd.summary)lines.push(dd.summary);
+    if(dd.package)lines.push('','**选择套餐**：'+dd.package);
+  }
+  return lines.join('\n');
+}
+
+function buildDOCX(d){
+  var dd=d.data||{},isC=d.type==='contact'||dd.type==='contact';
+  var h='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8"><style>body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;padding:40px}h1{font-size:20pt}h2{font-size:14pt;color:#1a1f2e}p,li{font-size:11pt;line-height:1.8}strong{color:#1a1f2e}.highlight{color:#e8614c;font-weight:bold;font-size:12pt}</style></head><body>';
+  h+='<h1>简历工作室 · 客户提交</h1>';
+  h+='<p><strong>时间：</strong>'+(d.time_human||'')+'</p>';
+  h+='<p><strong>类型：</strong>'+(isC?'联系我们':'信息收集表')+'</p><hr>';
+  if(isC){
+    h+='<h2>联系方式</h2>';
+    h+='<p><strong>姓名：</strong>'+(dd.name||'未填')+'</p>';
+    h+='<p><strong>微信号：</strong><span class="highlight">'+(dd.wechat||'未填')+'</span></p>';
+    h+='<p><strong>留言：</strong>'+(dd.message||'无')+'</p>';
+  }else{
+    h+='<h2>客户信息</h2>';
+    if(dd.summary)h+='<pre style="white-space:pre-wrap">'+dd.summary+'</pre>';
+    if(dd.package)h+='<p><strong>选择套餐：</strong>'+dd.package+'</p>';
+  }
+  h+='</body></html>';
+  return h;
+}
+
+function downloadBlob(content,filename,type){
+  var blob=new Blob(['﻿'+content],{type:type});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+}
+
+function downloadMD(key){
+  getData(key,function(d,err){
+    if(err){alert('加载失败: '+err);return;}
+    downloadBlob(buildMD(d),key.replace('submissions/','').replace('.json','')+'.md','text/markdown;charset=utf-8');
+  });
+}
+
+function downloadDOCX(key){
+  getData(key,function(d,err){
+    if(err){alert('加载失败: '+err);return;}
+    downloadBlob(buildDOCX(d),key.replace('submissions/','').replace('.json','')+'.doc','application/msword;charset=utf-8');
+  });
+}
+
 document.getElementById('pwdInput').addEventListener('keydown',function(e){if(e.key==='Enter')login();});
 if(location.search.indexOf('pwd=')>=0){PWD=new URLSearchParams(location.search).get('pwd');document.getElementById('pwdInput').value=PWD;loadData();}
 </script></body></html>
