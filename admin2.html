@@ -173,5 +173,5 @@ function downloadDOCX(key){
 }
 
 document.getElementById('pwdInput').addEventListener('keydown',function(e){if(e.key==='Enter')login();});
-if(location.search.indexOf('pwd=')>=0){PWD=new URLSearchParams(location.search).get('pwd');document.getElementById('pwdInput').value=PWD;loadData();}
+/* auto-login removed */
 </script></body></html>
