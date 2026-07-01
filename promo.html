@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>面试遥控器 — 代写简历 + 钩子式面经 · 39.9元</title>
+<style>
+  :root {
+    --bg: #090c10; --surface: #11161d; --card: #181d27; --border: #232a35;
+    --text: #e6e8ec; --text2: #88929e; --accent: #f97316;
+    --accent-glow: rgba(249,115,22,0.12); --green: #22c55e;
+    --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",-apple-system,BlinkMacSystemFont,sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 760px; margin:0 auto; padding:0 20px; }
+
+  /* ── Hero ── */
+  .hero { text-align:center; padding:56px 20px 40px; background:radial-gradient(ellipse 600px 280px at 50% 0%, rgba(249,115,22,0.07) 0%, transparent 70%); }
+  .hero .badge { display:inline-block; font-size:12px; letter-spacing:2px; color:var(--accent); border:1px solid rgba(249,115,22,0.3); padding:4px 14px; border-radius:20px; margin-bottom:18px; }
+  .hero h1 { font-size:clamp(28px,6vw,42px); font-weight:900; letter-spacing:1px; line-height:1.2; margin-bottom:10px; }
+  .hero h1 .hl { color:var(--accent); }
+  .hero .subtitle { font-size:17px; color:var(--text2); margin-bottom:24px; }
+  .hero .price { display:inline-block; font-size:30px; font-weight:800; background:var(--accent); color:#fff; padding:6px 24px; border-radius:8px; box-shadow:0 4px 24px rgba(249,115,22,0.3); }
+
+  .divider { border:none; border-top:1px solid var(--border); margin:0; }
+
+  /* ── Section ── */
+  .section { padding:48px 0; }
+  .section-label { font-size:11px; letter-spacing:3px; color:var(--accent); text-transform:uppercase; font-weight:700; margin-bottom:8px; }
+  .section-title { font-size:24px; font-weight:800; margin-bottom:6px; }
+  .section-desc { font-size:15px; color:var(--text2); margin-bottom:28px; line-height:1.7; }
+
+  /* ── Product cards ── */
+  .product-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .product-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+  .product-card .card-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+  .product-card .card-header .dot { width:10px; height:10px; border-radius:50%; }
+  .product-card .card-header .dot.orange { background:var(--accent); }
+  .product-card .card-header .dot.green { background:var(--green); }
+  .product-card .card-header .card-label { font-size:13px; font-weight:700; }
+  .product-card .card-body { padding:0; }
+
+  /* ── Mini resume preview ── */
+  .mini-resume { background:#0d1117; padding:12px 14px; font-size:6.5px; line-height:1.3; color:#c9d1d9; }
+  .mini-resume .mr-header { display:flex; gap:8px; padding-bottom:6px; border-bottom:0.5px solid #30363d; margin-bottom:6px; }
+  .mr-header .mr-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#1f1a33,#161b22); border:1px solid #a371f7; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:#a371f7; flex-shrink:0; }
+  .mr-header .mr-info h4 { font-size:9px; color:#f0f6fc; font-weight:800; letter-spacing:1px; }
+  .mr-header .mr-info .mr-tag { font-size:5.5px; color:#a371f7; }
+  .mr-header .mr-info .mr-bio { font-size:5px; color:#8b949e; margin-top:1px; line-height:1.3; max-width:200px; }
+  .mr-header .mr-contact { font-size:5px; color:#8b949e; text-align:right; line-height:1.5; flex-shrink:0; }
+  .mr-columns { display:flex; gap:8px; }
+  .mr-left { width:30%; border-right:0.5px solid #30363d; padding-right:6px; }
+  .mr-right { width:70%; padding-left:6px; }
+  .mr-sec-title { font-size:6px; font-weight:700; color:#f0f6fc; letter-spacing:0.5px; padding-bottom:2px; border-bottom:1px solid #30363d; margin-bottom:3px; }
+  .mr-edu .mr-school { font-size:6.5px; font-weight:700; color:#f0f6fc; }
+  .mr-edu .mr-date { font-size:5px; color:#8b949e; }
+  .mr-edu .mr-degree { font-size:5.5px; }
+  .mr-tags { display:flex; flex-wrap:wrap; gap:2px; margin-bottom:3px; }
+  .mr-tag { font-size:5px; padding:1px 4px; border-radius:2px; background:rgba(163,113,247,0.08); color:#a371f7; border:0.5px solid rgba(163,113,247,0.2); }
+  .mr-tag.grn { background:rgba(63,185,80,0.08); color:#3fb950; border-color:rgba(63,185,80,0.2); }
+  .mr-exp { margin-bottom:4px; }
+  .mr-exp .mr-exp-title { font-size:6.5px; font-weight:700; color:#f0f6fc; }
+  .mr-exp .mr-exp-sub { font-size:5px; color:#8b949e; }
+  .mr-exp .mr-exp-date { font-size:5px; color:#8b949e; }
+  .mr-bullet { font-size:5px; padding-left:6px; position:relative; margin-bottom:1px; color:#c9d1d9; }
+  .mr-bullet::before { content:"▸"; position:absolute; left:0; color:#a371f7; font-size:4px; }
+  .mr-bullet .hook-dot { color:#f97316; font-weight:700; }
+
+  /* ── Mini strategy preview ── */
+  .mini-strategy { background:#f8fafc; padding:12px 14px; font-size:7px; line-height:1.4; color:#1e293b; border-radius:0 0 var(--radius) var(--radius); }
+  .mini-strategy .ms-header { background:linear-gradient(135deg,#1e3a5f,#0d9488); color:#fff; padding:8px 10px; border-radius:6px; margin-bottom:8px; }
+  .mini-strategy .ms-header h4 { font-size:9px; font-weight:800; }
+  .mini-strategy .ms-header .ms-tags { display:flex; gap:4px; margin-top:4px; flex-wrap:wrap; }
+  .mini-strategy .ms-header .ms-tags span { background:rgba(255,255,255,0.15); padding:1px 6px; border-radius:10px; font-size:5.5px; }
+  .ms-table { width:100%; border-collapse:collapse; font-size:5.5px; margin-bottom:8px; }
+  .ms-table th { background:#e6f5f4; color:#0d9488; padding:4px 6px; text-align:left; font-weight:700; }
+  .ms-table td { padding:4px 6px; border-bottom:1px solid #e2e8f0; }
+  .ms-table .hook-num { color:#d97706; font-weight:800; }
+  .ms-qa { background:#fff; border:1px solid #e2e8f0; border-left:3px solid #1e3a5f; border-radius:4px; padding:8px 10px; margin-bottom:6px; }
+  .ms-qa .ms-hook-ref { font-size:5.5px; color:#d97706; font-weight:700; margin-bottom:2px; }
+  .ms-qa .ms-q { font-size:7px; font-weight:700; color:#1e293b; }
+  .ms-qa .ms-why { font-size:5.5px; color:#64748b; margin-bottom:4px; }
+  .ms-qa .ms-a { font-size:6px; line-height:1.5; color:#334155; }
+
+  /* ── Hook connection diagram ── */
+  .connection { display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:center; margin:28px 0; }
+  .conn-node { text-align:center; }
+  .conn-node .conn-icon { font-size:28px; margin-bottom:4px; }
+  .conn-node .conn-label { font-size:11px; color:var(--text2); }
+  .conn-node .conn-main { font-size:14px; font-weight:700; margin-top:2px; }
+  .conn-arrow { font-size:22px; color:var(--accent); }
+
+  /* ── Before/After ── */
+  .ba-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .ba-card { border-radius:var(--radius); padding:18px; border:1px solid var(--border); }
+  .ba-card.bad { background:rgba(239,68,68,0.05); border-color:rgba(239,68,68,0.12); }
+  .ba-card.good { background:rgba(34,197,94,0.04); border-color:rgba(34,197,94,0.12); }
+  .ba-card .ba-label { font-size:11px; font-weight:700; letter-spacing:1px; margin-bottom:10px; }
+  .ba-card.bad .ba-label { color:var(--red, #ef4444); }
+  .ba-card.good .ba-label { color:var(--green); }
+  .ba-card .ba-item { font-size:13px; padding:7px 10px; background:rgba(255,255,255,0.02); border-radius:6px; margin-bottom:5px; line-height:1.5; }
+
+  /* ── 95% stat ── */
+  .stat-block { text-align:center; padding:32px 0; }
+  .stat-block .big { font-size:64px; font-weight:900; color:var(--accent); line-height:1; }
+  .stat-block .label { font-size:15px; color:var(--text2); margin-top:4px; }
+
+  /* ── Steps ── */
+  .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .step { text-align:center; padding:20px 14px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); }
+  .step .sn { width:32px; height:32px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; margin:0 auto 10px; }
+  .step h4 { font-size:14px; margin-bottom:2px; }
+  .step p { font-size:12px; color:var(--text2); }
+
+  /* ── CTA ── */
+  .cta { text-align:center; padding:48px 20px; background:radial-gradient(ellipse 500px 180px at 50% 100%, rgba(249,115,22,0.08) 0%, transparent 70%); }
+  .cta .cta-title { font-size:22px; font-weight:800; margin-bottom:8px; }
+  .cta .cta-price { font-size:36px; font-weight:900; color:var(--accent); }
+  .cta .cta-desc { font-size:14px; color:var(--text2); margin-top:4px; }
+
+  .footer { text-align:center; padding:24px; font-size:11px; color:var(--text2); border-top:1px solid var(--border); }
+
+  @media (max-width:640px) {
+    .product-grid, .ba-grid, .steps { grid-template-columns:1fr; }
+    .connection { flex-direction:column; gap:8px; }
+    .conn-arrow { transform:rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero"><div class="container">
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;opacity:0.65;">
+    <svg width="22" height="22" viewBox="0 0 200 200" style="flex-shrink:0;"><rect x="50" y="40" width="100" height="126" rx="10" fill="#e6e8ec"/><rect x="50" y="40" width="14" height="126" rx="7" fill="#f97316"/><rect x="76" y="68" width="48" height="8" rx="4" fill="#88929e" opacity="0.6"/><rect x="76" y="86" width="58" height="8" rx="4" fill="#88929e" opacity="0.4"/><rect x="76" y="104" width="38" height="8" rx="4" fill="#88929e" opacity="0.3"/></svg>
+    <span style="font-weight:700;font-size:13px;color:var(--text2);letter-spacing:1.5px;">简历工作室</span>
+  </div>
+  <div class="badge">📋 简历代写 + 🎯 面经联动</div>
+  <h1>简历写得好不好，<br>面试官说了算——<br><span class="hl">我们让面试官按你的剧本提问</span></h1>
+  <p class="subtitle">你买的不只是一份简历。你买的是一份<strong style="color:var(--text);">带钩子的简历</strong>，和一份<strong style="color:var(--text);">预判了面试官所有追问的攻略</strong>。</p>
+  <div class="price">39.9 元</div>
+  <p style="font-size:11px;color:var(--text2);margin-top:14px;opacity:0.5;">© 简历工作室出品 · 原创内容 侵权必究</p>
+</div></section>
+
+<hr class="divider">
+
+<!-- ═══════════ WHAT YOU GET ═══════════ -->
+<section class="section"><div class="container">
+  <div class="section-label">WHAT YOU GET</div>
+  <div class="section-title">你买到的是两样东西</div>
+  <p class="section-desc">下面是<strong style="color:var(--text);">实物预览</strong>——交付给你的就是这样的 HTML 文件，打开即用。所有案例数据已脱敏。</p>
+
+  <div class="product-grid">
+
+    <!-- Product 1: Resume -->
+    <div class="product-card">
+      <div class="card-header"><span class="dot orange"></span><span class="card-label">交付物一：双版简历 HTML</span></div>
+      <div class="card-body">
+        <div class="mini-resume">
+          <div class="mr-header">
+            <div class="mr-avatar">张</div>
+            <div class="mr-info">
+              <h4>张 同 学</h4>
+              <div class="mr-tag">某海外大学 · 管理学硕士 · 数据分析</div>
+              <div class="mr-bio">管理学与数据分析复合背景。硕士期间独立完成国际商务研究项目，熟练运用 Python 与 MySQL 进行业务数据分析。全英文学术环境，英语可作为工作语言。<span class="hook-dot">🪝</span></div>
+            </div>
+            <div class="mr-contact">📞 138-xxxx-xxxx<br>✉️ xxx@xxx.com<br>📍 宁波<br><span style="background:rgba(163,113,247,0.1);color:#a371f7;padding:1px 4px;border-radius:2px;">外贸业务员</span></div>
+          </div>
+          <div class="mr-columns">
+            <div class="mr-left">
+              <div class="mr-sec-title">教育背景</div>
+              <div class="mr-edu">
+                <div class="mr-school">某海外大学 (QS Top 100)</div><div class="mr-date">2025.09 – 2026.06</div>
+                <div class="mr-degree">管理学 硕士</div>
+              </div>
+              <div class="mr-edu" style="margin-top:2px;">
+                <div class="mr-school">某国内大学</div><div class="mr-date">2020.09 – 2024.06</div>
+                <div class="mr-degree">大数据 学士</div>
+              </div>
+              <div class="mr-sec-title" style="margin-top:4px;">核心能力</div>
+              <div class="mr-tags"><span class="mr-tag">客户开发</span><span class="mr-tag">订单跟进</span><span class="mr-tag grn">数据分析</span></div>
+              <div class="mr-tags"><span class="mr-tag grn">Python</span><span class="mr-tag grn">MySQL</span><span class="mr-tag">英语商务沟通</span></div>
+            </div>
+            <div class="mr-right">
+              <div class="mr-sec-title">项目经历</div>
+              <div class="mr-exp">
+                <div class="mr-exp-title">国际商务研究项目 <span class="hook-dot">🪝</span></div>
+                <div class="mr-exp-sub">独立负责 · 市场分析 · 全英文报告</div>
+                <div class="mr-exp-date">2026.03 – 05</div>
+              </div>
+              <div class="mr-bullet"><span class="hook-dot">🪝</span> 独立完成国际商务研究课题，围绕<strong style="color:#f0f6fc;">国际市场进入策略与贸易渠道</strong>展开分析，完成选题→文献综述→数据采集→结论提炼全流程</div>
+              <div class="mr-bullet"><span class="hook-dot">🪝</span> 运用 <strong style="color:#f0f6fc;">Python 进行市场数据采集与清洗</strong>，通过 MySQL 完成结构化数据存储与查询，结合 Excel 进行市场容量测算与可视化</div>
+              <div class="mr-bullet">撰写<strong style="color:#f0f6fc;">全英文研究报告并完成答辩展示</strong></div>
+              <div class="mr-sec-title" style="margin-top:4px;">专业能力</div>
+              <div class="mr-exp"><div class="mr-exp-title">数据技术能力 <span class="hook-dot">🪝</span></div></div>
+              <div class="mr-bullet">系统掌握 <strong style="color:#f0f6fc;">Python（熟练）</strong>，能独立完成数据采集、清洗、分析与可视化，可应用于客户分析与市场研判</div>
+              <div class="mr-bullet">熟练使用 <strong style="color:#f0f6fc;">MySQL（熟练）</strong>，具备结构化数据建模与查询优化能力</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 2: Strategy -->
+    <div class="product-card">
+      <div class="card-header"><span class="dot green"></span><span class="card-label">交付物二：钩子式求职策略 HTML</span></div>
+      <div class="card-body">
+        <div class="mini-strategy">
+          <div class="ms-header">
+            <h4>🎯 张同学 · 外贸业务求职策略</h4>
+            <div class="ms-tags"><span>🪝 海外硕士+数据本科</span><span>🪝 商务研究项目</span><span>🪝 Python+MySQL</span><span>🪝 全英文学术</span></div>
+          </div>
+          <!-- Hook map -->
+          <table class="ms-table">
+            <tr><th>#</th><th>简历钩子</th><th>预测面试追问</th><th>→</th></tr>
+            <tr><td class="hook-num">01</td><td>管理学硕士 + 大数据本科</td><td>"为什么从数据转向管理？"</td><td>Q1</td></tr>
+            <tr><td class="hook-num">02</td><td>独立完成全英文商务研究项目</td><td>"讲讲这个项目"</td><td>Q2</td></tr>
+            <tr><td class="hook-num">03</td><td>Python + MySQL 熟练</td><td>"你编程能做什么？"</td><td>Q3</td></tr>
+          </table>
+          <!-- Q&A sample -->
+          <div class="ms-qa">
+            <div class="ms-hook-ref">🪝 对比钩子 — 简历：大数据本科 → 管理学硕士</div>
+            <div class="ms-q">Q1：你为什么从大数据转到管理学？</div>
+            <div class="ms-why">面试官真正在问：你的职业规划清晰吗？</div>
+            <div class="ms-a"><strong>▼ 建议回答：</strong>这不是随意转向。本科让我掌握了技术工具，但我发现很多做数据的人不懂业务，分析落不了地。硕士补了商业课——市场营销、战略管理、供应链。现在我既能用 Python 分析数据，也能理解数据对业务意味着什么。外贸业务每天产生大量客户和订单数据，我的复合背景意味着<strong>我能比别人更快从数据中发现业务问题</strong>。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<hr class="divider">
+
+<!-- ═══════════ THE CONNECTION ═══════════ -->
+<section class="section"><div class="container">
+  <div class="section-label">THE MAGIC</div>
+  <div class="section-title">简历和面经是怎么联动的？</div>
+  <p class="section-desc">
+    普通简历写完就完了。我们的简历每一条经历都埋了<strong style="color:var(--accent);">钩子🪝</strong>——就是那些面试官看了忍不住要追问的细节。然后，在求职策略里，<strong style="color:var(--text);">每个钩子都配好了一个完整的 Q&A</strong>。
+  </p>
+
+  <div class="connection">
+    <div class="conn-node">
+      <div class="conn-icon">📄</div>
+      <div class="conn-label">简历上写</div>
+      <div class="conn-main">"提速<span style="color:var(--accent);">29%</span>" 🪝</div>
+    </div>
+    <span class="conn-arrow">→</span>
+    <div class="conn-node">
+      <div class="conn-icon">🤔</div>
+      <div class="conn-label">面试官想</div>
+      <div class="conn-main">"怎么做到的？"</div>
+    </div>
+    <span class="conn-arrow">→</span>
+    <div class="conn-node">
+      <div class="conn-icon">❓</div>
+      <div class="conn-label">面试官问</div>
+      <div class="conn-main">"讲讲你的<br>流程优化方法"</div>
+    </div>
+    <span class="conn-arrow">→</span>
+    <div class="conn-node">
+      <div class="conn-icon">📋</div>
+      <div class="conn-label">策略里已经写好</div>
+      <div class="conn-main" style="color:var(--green);">✅ STAR 回答<br>逐字稿</div>
+    </div>
+  </div>
+
+  <div class="stat-block">
+    <div class="big">95%</div>
+    <div class="label">简历中埋的钩子，平均 95% 会被面试官追问<br>—— 因为具体、量化的细节，天然引发好奇。这是行为心理学，不是玄学。</div>
+  </div>
+</div></section>
+
+<hr class="divider">
+
+<!-- ═══════════ BEFORE / AFTER ═══════════ -->
+<section class="section"><div class="container">
+  <div class="section-label">THE DIFFERENCE</div>
+  <div class="section-title">同样的经历，写法不同，效果天差地别</div>
+  <p class="section-desc">以下是同一个人的同一段经历——左边是普通写法，右边是我们的钩子写法。</p>
+  <div class="ba-grid">
+    <div class="ba-card bad">
+      <div class="ba-label">❌ 普通简历</div>
+      <div class="ba-item">负责海外客户开发工作</div>
+      <div class="ba-item">通过邮件和电话联系潜在客户</div>
+      <div class="ba-item">独立完成市场调研与分析项目</div>
+      <div class="ba-item">使用数据分析工具处理业务数据</div>
+      <div style="margin-top:8px;font-size:11px;color:rgba(239,68,68,0.6);">面试官反应：扫一眼就过，没有想问的</div>
+    </div>
+    <div class="ba-card good">
+      <div class="ba-label">✅ 钩子简历（面试遥控器出品）</div>
+      <div class="ba-item">🪝 覆盖<strong>3大区域、4类渠道</strong>的海外客户网络，日均稳定触达<strong>10家企业</strong></div>
+      <div class="ba-item">🪝 将群发邮件优化为<strong>四步触达流程</strong>：场景判断→需求分析→产品匹配→低压沟通</div>
+      <div class="ba-item">🪝 独立完成<strong>全英文</strong>国际商务研究报告，从选题到答辩全流程</div>
+      <div class="ba-item">🪝 运用<strong>Python + MySQL</strong>完成市场数据的采集、清洗与可视化分析</div>
+      <div style="margin-top:8px;font-size:11px;color:rgba(34,197,94,0.7);">面试官反应：每个🪝都在引发追问→策略里都有答案</div>
+    </div>
+  </div>
+</div></section>
+
+<hr class="divider">
+
+<!-- ═══════════ WHAT'S IN THE STRATEGY ═══════════ -->
+<section class="section"><div class="container">
+  <div class="section-label">INSIDE THE STRATEGY</div>
+  <div class="section-title">求职策略里到底有什么？</div>
+  <p class="section-desc">以下是策略 HTML 的<strong style="color:var(--text);">真实内容结构</strong>——每个模块都对应你需要的东西。</p>
+
+  <div class="product-grid">
+    <div class="product-card" style="border-top:3px solid var(--accent);">
+      <div class="card-body" style="padding:18px;">
+        <h4 style="font-size:15px;margin-bottom:12px;">🎬 自我介绍 · 逐字稿</h4>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;">中英文双版，按5步结构设计——<strong>每步埋一个钩子</strong>：</p>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8;margin-top:6px;">
+          ① 我是谁 🪝<br>
+          ② 我有什么成果 🪝<br>
+          ③ 我的核心能力 🪝<br>
+          ④ 我对行业/公司的了解 🪝<br>
+          ⑤ 我为什么选这个岗位 🪝
+        </p>
+        <p style="font-size:12px;color:var(--accent);margin-top:8px;">→ 面试官接下来问的，都在这5步的钩子覆盖范围内</p>
+      </div>
+    </div>
+    <div class="product-card" style="border-top:3px solid var(--green);">
+      <div class="card-body" style="padding:18px;">
+        <h4 style="font-size:15px;margin-bottom:12px;">💬 7-8 个完整 Q&A</h4>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;">每个钩子对应一个问答块，包含：</p>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8;margin-top:6px;">
+          • 钩子引用（简历哪句话触发的）<br>
+          • 面试官真正在问什么（深层意图）<br>
+          • STAR 结构回答逐字稿<br>
+          • 回答好在哪里的分析
+        </p>
+        <p style="font-size:12px;color:var(--green);margin-top:8px;">→ 不是"准备好被问"，而是"你设的题他来答"</p>
+      </div>
+    </div>
+    <div class="product-card" style="border-top:3px solid var(--accent);">
+      <div class="card-body" style="padding:18px;">
+        <h4 style="font-size:15px;margin-bottom:12px;">⚡ 话术速查表</h4>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;">6个最常见面试场景的 ❌ vs ✅ 对照：</p>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8;margin-top:6px;">
+          • "你最大的劣势是什么？"<br>
+          • "你为什么选这个行业？"<br>
+          • "你的职业规划是什么？"<br>
+          • "你有什么想问我们的？"<br>
+          • 薪资谈判怎么说<br>
+          • 零实习经验怎么说
+        </p>
+      </div>
+    </div>
+    <div class="product-card" style="border-top:3px solid var(--green);">
+      <div class="card-body" style="padding:18px;">
+        <h4 style="font-size:15px;margin-bottom:12px;">✅ 面试日 Checklist</h4>
+        <p style="font-size:13px;color:var(--text2);line-height:1.7;">面试当天逐项核对：</p>
+        <p style="font-size:12px;color:var(--text2);line-height:1.8;margin-top:6px;">
+          ☐ 中英文自我介绍背熟<br>
+          ☐ 7-8个Q&A过一遍<br>
+          ☐ 话术表复习<br>
+          ☐ 研究目标公司（产品线+出口市场）<br>
+          ☐ 准备3个反问问题<br>
+          ☐ 打印简历×2
+        </p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<hr class="divider">
+
+<!-- ═══════════ ORDER ═══════════ -->
+<section class="section"><div class="container">
+  <div class="section-label">HOW TO ORDER</div>
+  <div class="section-title">怎么买？</div>
+  <div class="steps">
+    <div class="step">
+      <div class="sn">1</div>
+      <h4>加微信</h4>
+      <p>发送好友申请</p>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <h4>填信息表 + 付款</h4>
+      <p>5分钟填写基本信息和求职意向，转账 39.9 元</p>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <h4>24h 内交付</h4>
+      <p>收到双版简历HTML + 求职策略HTML，打开即用</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="cta"><div class="container">
+  <div class="cta-title">📱 加微信，发"面试遥控器"</div>
+  <div class="cta-price">39.9 元</div>
+  <div class="cta-desc">一份带钩子的简历 + 一份预判了面试官所有追问的攻略<br>比一杯奶茶多十几块，换一场你主导的面试。</div>
+</div></section>
+
+<footer class="footer">
+  © 简历工作室 · 面试遥控器<br>
+  原创内容 · 侵权必究 · 所有案例已脱敏处理
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>面试遥控器 · 客户信息收集表</title>
+<style>
+  :root {
+    --ink: #1a1f2e;
+    --accent: #f97316;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --card-bg: #fff;
+    --input-bg: #f9fafb;
+    --focus-ring: rgba(249,115,22,0.25);
+    --success: #10b981;
+    --error: #ef4444;
+    --highlight: #fef3c7;
+    --highlight-border: #f59e0b;
+    --shadow-sm: 0 1px 3px rgba(26,31,46,0.05);
+    --shadow-md: 0 4px 16px rgba(26,31,46,0.08);
+    --radius: 10px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: #f3f2ef;
+    color: var(--ink);
+    line-height: 1.6;
+    padding-bottom: 40px;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--ink);
+    color: #fff;
+    padding: 20px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  .topbar-inner { max-width: 760px; margin: 0 auto; }
+  .topbar h1 { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; }
+  .topbar h1 .hl { color: var(--accent); }
+
+  .topbar .sub {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── Progress bar ── */
+  .progress-row {
+    max-width: 760px;
+    margin: 14px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  .progress-pct {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .save-dot {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+    transition: color 0.3s;
+  }
+  .save-dot.saved { color: var(--success); }
+
+  /* ── Container ── */
+  .container { max-width: 760px; margin: 0 auto; padding: 24px 20px; }
+
+  /* ── Section ── */
+  .section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.3s;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+
+  .section.completed .section-num { background: var(--success); }
+
+  .section-title { font-size: 1.05rem; font-weight: 800; flex: 1; }
+
+  .section-status {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+    background: #f9fafb;
+    color: #c4c8cf;
+    transition: all 0.3s;
+  }
+
+  .section.completed .section-status {
+    background: #ecfdf5;
+    color: var(--success);
+  }
+
+  .section-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* ── Form elements ── */
+  .field { margin-bottom: 16px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .field-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .field-hint { font-weight: 400; color: var(--muted); font-size: 0.76rem; }
+
+  .field-input, .field-textarea, .field-select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--input-bg);
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    -webkit-appearance: none;
+  }
+
+  .field-input.error, .field-textarea.error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+  }
+
+  .field-input:focus, .field-textarea:focus, .field-select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+    background: #fff;
+  }
+
+  .field-input::placeholder, .field-textarea::placeholder { color: #c4c8cf; }
+
+  .error-msg { font-size: 0.76rem; color: var(--error); margin-top: 4px; display: none; }
+  .error-msg.show { display: block; }
+
+  /* ── Checkbox pills ── */
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .checkbox-pill { position: relative; }
+
+  .checkbox-pill input { position: absolute; opacity: 0; pointer-events: none; }
+
+  .checkbox-pill label {
+    display: block;
+    padding: 8px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--input-bg);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .checkbox-pill input:checked + label {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+    animation: popIn 0.2s ease;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.95); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  /* ── Sub-section ── */
+  .sub-section {
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 14px;
+    background: #fafaf9;
+    transition: opacity 0.3s;
+  }
+
+  .sub-section-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sub-section-title .dot {
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .sub-section-title .dot::before {
+    content: ''; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+  }
+
+  .btn-remove {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .btn-remove:hover { border-color: var(--error); color: var(--error); }
+
+  .btn-add {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    background: none;
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-add:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-add:active { background: rgba(249,115,22,0.04); }
+
+  /* ── JD area ── */
+  .jd-area {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    background: var(--input-bg);
+    transition: border-color 0.15s;
+  }
+
+  .jd-area:focus-within { border-color: var(--accent); }
+
+  .jd-area .jd-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .jd-area textarea {
+    width: 100%;
+    min-height: 110px;
+    border: none;
+    background: transparent;
+    resize: vertical;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .jd-area textarea:focus { outline: none; }
+
+  /* ── Tip ── */
+  .tip {
+    background: #fefce8;
+    border-left: 3px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.82rem;
+    color: #92400e;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── Product info card ── */
+  .product-info {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1a334f 100%);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .product-info .pi-badge {
+    background: var(--accent);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .product-info .pi-text { flex: 1; font-size: 0.88rem; line-height: 1.6; min-width: 200px; }
+  .product-info .pi-text strong { color: var(--accent); }
+  .product-info .pi-price {
+    font-size: 1.8rem; font-weight: 900; color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ── Submit area ── */
+  .submit-area {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .submit-area h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .submit-area > p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .submit-confirm {
+    text-align: left;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .submit-confirm label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 6px 0;
+  }
+
+  .submit-confirm input[type="checkbox"] {
+    margin-top: 2px;
+    accent-color: var(--ink);
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--ink);
+    color: #fff;
+    padding: 14px 48px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.1s, opacity 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:hover { background: #2d3348; }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; }
+  .btn.ready { opacity: 1; background: var(--accent); }
+  .btn.ready:hover { background: #ea580c; }
+
+  /* ── RESULT MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    overflow-y: auto;
+  }
+
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    transform: translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .modal-overlay.show .modal { transform: translateY(0); }
+
+  .modal h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .modal .modal-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* delivery preview */
+  .delivery-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .delivery-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+    background: #fafaf9;
+  }
+  .delivery-item .di-icon { font-size: 24px; margin-bottom: 4px; }
+  .delivery-item .di-name { font-weight: 700; font-size: 0.85rem; }
+  .delivery-item .di-desc { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+
+  .final-price-tag {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* ── Modal actions ── */
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-secondary {
+    background: #f3f4f6;
+    color: var(--ink);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-secondary:hover { background: #e5e7eb; }
+  .btn-secondary.copied { background: #ecfdf5; color: var(--success); }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #2d3348; }
+
+  .final-msg {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 16px;
+    line-height: 1.5;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    z-index: 300;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .container { padding: 16px 12px; }
+    .section { padding: 20px 16px 18px; }
+    .field-row, .field-row-3 { grid-template-columns: 1fr; gap: 12px; }
+    .sub-section { padding: 16px; }
+    .topbar { padding: 14px 16px; }
+    .topbar h1 { font-size: 1.05rem; }
+    .delivery-preview { grid-template-columns: 1fr; }
+    .modal { padding: 20px 16px; max-height: 85vh; overflow-y: auto; }
+    .product-info { flex-direction: column; text-align: center; gap: 10px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .topbar { background: var(--ink); -webkit-print-color-adjust: exact; position: static; }
+    .section { box-shadow: none; break-inside: avoid; }
+    .field-input, .field-textarea { background: #fff; border: 1px solid #ccc; }
+    .submit-area, .btn-add, .btn-remove { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="jsErrors" style="background:#fff3cd;border:2px solid #ffc107;padding:12px;margin:8px;border-radius:8px;font-size:13px;display:none;font-family:monospace;"></div>
+<script>
+window.onerror = function(msg, url, line, col, err) {
+  var el = document.getElementById('jsErrors');
+  if (el) {
+    el.style.display = 'block';
+    el.innerHTML += '<div style="color:#dc2626;margin:4px 0;">❌ 第'+line+'行: '+msg+'</div>';
+  }
+  return false;
+};
+</script>
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <h1>🎯 <span class="hl">面试遥控器</span> · 客户信息收集表</h1>
+    <p class="sub">请尽可能详细填写 · 越详细 = 简历效果越好 · 预计 10-15 分钟</p>
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-pct" id="progressPct">0%</div>
+    </div>
+    <div class="save-dot" id="saveDot">● 自动保存中</div>
+  </div>
+</div>
+
+<div class="container" id="formContainer">
+
+<!-- ═══ 产品信息 ═══ -->
+<div class="product-info">
+  <div class="pi-badge">📋 你购买的</div>
+  <div class="pi-text">
+    <strong>双版简历 HTML</strong>（深空黑 + 极简白）+ <strong>钩子式求职策略 HTML</strong><br>
+    简历中预埋🪝钩子 → 引导面试官追问 → 策略里已备好所有答案
+  </div>
+  <div class="pi-price">39.9 元</div>
+</div>
+
+<!-- ═══ 1. 基本信息 ═══ -->
+<div class="section" data-section="basic">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title">基本信息</div>
+    <span class="section-status">待填写</span>
+  </div>
+
+  <div class="field-row-3">
+    <div class="field">
+      <label class="field-label">姓名 <span style="color:var(--error)">*</span></label>
+      <input class="field-input" type="text" name="name" placeholder="张三" required>
+      <div class="error-msg">请填写姓名</div>
+    </div>
+    <div class="field">
+      <label class="field-label">性别</label>
+      <select class="field-select" name="gender">
+        <option value="">请选择</option><option>男</option><option>女</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label">出生年月</label>
+      <input class="field-input" type="text" name="birth" placeholder="2002.06">
+    </div>
+  </div>
+
+  <div class="field-row-3">
+    <div class="field"><label class="field-label">手机号</label><input class="field-input" type="tel" name="phone" placeholder="138xxxx1234"></div>
+    <div class="field"><label class="field-label">邮箱</label><input class="field-input" type="email" name="email" placeholder="zhangsan@email.com"></div>
+    <div class="field"><label class="field-label">微信号</label><input class="field-input" type="text" name="wechat" placeholder="zhangsan_wx"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">目标城市</label>
+    <input class="field-input" type="text" name="city" placeholder="北京 / 上海 / 深圳 / 不限">
+  </div>
+  <div class="field">
+    <label class="field-label">证件照 <span class="field-hint">（可选，用于简历头像）</span></label>
+    <input class="field-input" type="file" name="photo" accept="image/*" style="padding:8px;" onchange="handlePhoto(this)">
+    <input type="hidden" name="photoData" id="photoData">
+    <div id="photoPreview" style="margin-top:8px;display:none;"></div>
+  </div>
+</div>
+
+<!-- ═══ 2. 教育背景 ═══ -->
+<div class="section" data-section="education">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title">教育背景</div>
+    <span class="section-status">待填写</span>
+  </div>
+  <p class="section-desc">请至少填写一段教育经历。如有多个学历（本科+硕士等），请分别添加。</p>
+  <div id="educationContainer"></div>
+  <button class="btn-add" onclick="addEducation()">+ 添加一段教育经历</button>
+</div>
+
+<!-- ═══ 3. 实习经历 ═══ -->
+<div class="section" data-section="internship">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-title">实习经历</div>
+    <span class="section-status">待填写</span>
+  </div>
+  <p class="section-desc">包括短期项目、远程实习、暑期实践。写得越具体，我们能帮你呈现的就越精彩。</p>
+  <div id="internshipContainer"></div>
+  <button class="btn-add" onclick="addInternship()">+ 添加一段实习经历</button>
+</div>
+
+<!-- ═══ 4. 项目经历 ═══ -->
+<div class="section" data-section="project">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-title">项目经历</div>
+    <span class="section-status">待填写</span>
+  </div>
+  <p class="section-desc">包括课程项目、毕业设计、个人项目、比赛项目、开源贡献等。</p>
+  <div id="projectContainer"></div>
+  <button class="btn-add" onclick="addProject()">+ 添加一个项目经历</button>
+</div>
+
+<!-- ═══ 5. 校园 & 竞赛 ═══ -->
+<div class="section" data-section="campus">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-title">校园活动 & 竞赛获奖</div>
+    <span class="section-status">待填写</span>
+  </div>
+  <p class="section-desc">包括社团、学生会、志愿活动、竞赛等。可添加多条。</p>
+  <div id="campusContainer"></div>
+  <button class="btn-add" onclick="addCampus()">+ 添加一段校园/竞赛经历</button>
+</div>
+
+<!-- ═══ 6. 技能 ═══ -->
+<div class="section" data-section="skills">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div class="section-title">技能清单</div>
+    <span class="section-status">待填写</span>
+  </div>
+
+  <div class="field">
+    <label class="field-label">硬技能 <span class="field-hint">（标注熟练程度：精通/熟练/了解）</span></label>
+    <textarea class="field-textarea" name="hardSkills" style="min-height:70px;" placeholder="Python（熟练）、SQL（熟练）、Figma（了解）、CET-6（620分）、计算机二级"></textarea>
+  </div>
+
+  <div class="field">
+    <label class="field-label">语言能力</label>
+    <div class="field-row">
+      <input class="field-input" type="text" name="language1" placeholder="英语：CET-6 / 雅思 7.0">
+      <input class="field-input" type="text" name="language2" placeholder="其他语言（选填）">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">软技能 <span class="field-hint">（点击勾选你比较突出的）</span></label>
+    <div class="checkbox-group">
+      <span class="checkbox-pill"><input type="checkbox" id="s1" name="softSkill" value="沟通表达"><label for="s1">沟通表达</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s2" name="softSkill" value="团队协作"><label for="s2">团队协作</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s3" name="softSkill" value="项目管理"><label for="s3">项目管理</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s4" name="softSkill" value="数据分析"><label for="s4">数据分析</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s5" name="softSkill" value="快速学习"><label for="s5">快速学习</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s6" name="softSkill" value="解决问题"><label for="s6">解决问题</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s7" name="softSkill" value="领导力"><label for="s7">领导力</label></span>
+      <span class="checkbox-pill"><input type="checkbox" id="s8" name="softSkill" value="抗压能力"><label for="s8">抗压能力</label></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 7. 求职意向 ═══ -->
+<div class="section" data-section="intent">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div class="section-title">求职意向</div>
+    <span class="section-status">待填写</span>
+  </div>
+
+  <div class="field-row">
+    <div class="field"><label class="field-label">目标行业</label><input class="field-input" type="text" name="industry" placeholder="互联网 / 金融 / 快消 / 不限"></div>
+    <div class="field"><label class="field-label">目标岗位类型</label><input class="field-input" type="text" name="roleType" placeholder="产品经理 / 软件开发 / 数据分析"></div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label class="field-label">期望薪资范围</label><input class="field-input" type="text" name="salary" placeholder="10k-15k / 面议"></div>
+    <div class="field">
+      <label class="field-label">是否接受实习</label>
+      <select class="field-select" name="internAccept">
+        <option value="">请选择</option><option>是，可先实习后转正</option><option>否，只考虑全职</option><option>都可以</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:20px;">
+    <label class="field-label">已有目标岗位 JD <span class="field-hint">（直接粘贴 JD 全文，有几个贴几个。没有也没关系）</span></label>
+  </div>
+  <div id="jdContainer"></div>
+  <button class="btn-add" onclick="addJD()">+ 添加一个 JD</button>
+</div>
+
+<!-- ═══ 8. 补充 ═══ -->
+<div class="section" data-section="extra">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <div class="section-title">补充信息</div>
+    <span class="section-status">待填写</span>
+  </div>
+
+  <div class="tip">💡 坦诚回答能帮我们更好地理解你，写出更有针对性的简历。</div>
+
+  <div class="field">
+    <label class="field-label">你的最大优势是什么？</label>
+    <textarea class="field-textarea" name="strength" style="min-height:55px;" placeholder="例：有一段大厂实习、专业排名前5%"></textarea>
+  </div>
+  <div class="field">
+    <label class="field-label">你的最大短板是什么？</label>
+    <textarea class="field-textarea" name="weakness" style="min-height:55px;" placeholder="例：学校是双非、没有相关实习、跨专业求职"></textarea>
+  </div>
+  <div class="field">
+    <label class="field-label">有什么特殊需求？</label>
+    <textarea class="field-textarea" name="special" style="min-height:55px;" placeholder="例：需要隐藏某段经历、重点突出某个技能（没有则留空）"></textarea>
+  </div>
+</div>
+
+<!-- ═══ SUBMIT ═══ -->
+<div class="submit-area">
+  <h3>📤 填好了，提交信息</h3>
+  <p>提交后将生成完整摘要——复制发回给我，24小时内交付</p>
+  <div class="submit-confirm">
+    <label><input type="checkbox" id="confirm1"> 我确认以上信息真实准确</label>
+    <label><input type="checkbox" id="confirm2"> 我理解填写越详细 = 简历效果越好</label>
+  </div>
+  <button class="btn" id="submitBtn" onclick="handleSubmit()">提交信息</button>
+</div>
+
+</div>
+
+<!-- ═══ RESULT MODAL ═══ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>✅ 提交成功！</h3>
+    <p class="modal-sub">付款后 24 小时内交付到你微信</p>
+
+    <div class="delivery-preview">
+      <div class="delivery-item">
+        <div class="di-icon">📄</div>
+        <div class="di-name">双版简历 HTML</div>
+        <div class="di-desc">深空黑 + 极简白<br>带🪝钩子，打开即用</div>
+      </div>
+      <div class="delivery-item">
+        <div class="di-icon">🎯</div>
+        <div class="di-name">钩子式求职策略 HTML</div>
+        <div class="di-desc">自我介绍逐字稿<br>Q&A + 话术速查 + Checklist</div>
+      </div>
+    </div>
+
+    <div class="final-price-tag">39.9 元</div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="copyBtn" onclick="copyResult()">📋 一键复制，发回给我</button>
+      <button class="btn-secondary" onclick="closeModal()">关闭</button>
+    </div>
+
+    <p class="final-msg" id="finalMsg">
+      复制后请通过微信发回给我<br>我会在 24 小时内完成并交付
+    </p>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+let internshipCount = 0;
+let projectCount = 0;
+let jdCount = 0;
+let eduCount = 0;
+let campusCount = 0;
+const AUTO_SAVE_KEY = 'interview_remote_form_v1';
+
+// ═══════════════════════════════════
+// HTML TEMPLATES (unchanged from form7)
+// ═══════════════════════════════════
+
+function internHTML(n) {
+  return '<div class="sub-section" data-internship="'+n+'">' +
+    '<div class="sub-section-title"><span class="dot">实习 '+n+'</span>'+(n>1?'<button class="btn-remove" onclick="removeInternship('+n+')">删除</button>':'')+'</div>' +
+    '<div class="field-row"><div class="field"><label class="field-label">公司名称</label><input class="field-input" name="internCompany'+n+'" placeholder="字节跳动"></div><div class="field"><label class="field-label">岗位名称</label><input class="field-input" name="internRole'+n+'" placeholder="产品经理实习生"></div></div>' +
+    '<div class="field"><label class="field-label">起止时间</label><input class="field-input" name="internTime'+n+'" placeholder="2023.06 - 2023.09（3个月）"></div>' +
+    '<div class="field"><label class="field-label">主要职责（3-5条）</label><textarea class="field-textarea" name="internDuty'+n+'" placeholder="1. 负责XX功能的需求调研&#10;2. 撰写PRD并跟进开发&#10;3. ..."></textarea></div>' +
+    '<div class="field"><label class="field-label">具体成果（越量化越好）</label><textarea class="field-textarea" name="internResult'+n+'" placeholder="1. 功能上线后DAU提升12%&#10;2. 整理50+条反馈推动3个优化项"></textarea></div>' +
+    '<div class="field"><label class="field-label">使用的工具/技能</label><input class="field-input" name="internTools'+n+'" placeholder="Figma, SQL, Jira"></div>' +
+  '</div>';
+}
+
+function projHTML(n) {
+  return '<div class="sub-section" data-project="'+n+'">' +
+    '<div class="sub-section-title"><span class="dot">项目 '+n+'</span>'+(n>1?'<button class="btn-remove" onclick="removeProject('+n+')">删除</button>':'')+'</div>' +
+    '<div class="field-row"><div class="field"><label class="field-label">项目名称</label><input class="field-input" name="projName'+n+'" placeholder="校园二手交易小程序"></div><div class="field"><label class="field-label">项目时间</label><input class="field-input" name="projTime'+n+'" placeholder="2022.09 - 2022.12"></div></div>' +
+    '<div class="field-row"><div class="field"><label class="field-label">你的角色</label><input class="field-input" name="projRole'+n+'" placeholder="项目负责人 + 前端开发"></div><div class="field"><label class="field-label">技术栈/工具</label><input class="field-input" name="projTech'+n+'" placeholder="微信小程序, JS"></div></div>' +
+    '<div class="field"><label class="field-label">项目简介（1-2句话）</label><input class="field-input" name="projDesc'+n+'" placeholder="面向本校学生的二手交易小程序"></div>' +
+    '<div class="field"><label class="field-label">项目成果（量化）</label><input class="field-input" name="projResult'+n+'" placeholder="上线3个月注册2000+，交易500+单"></div>' +
+    '<div class="field"><label class="field-label">你的贡献</label><textarea class="field-textarea" name="projContrib'+n+'" placeholder="独立完成前端开发，设计物品分类和搜索功能"></textarea></div>' +
+  '</div>';
+}
+
+function jdHTML(n) {
+  return '<div class="jd-area" data-jd="'+n+'">' +
+    '<div class="jd-label">📋 JD '+n+(n>1?'<button class="btn-remove" onclick="removeJD('+n+')">删除</button>':'')+'</div>' +
+    '<textarea name="jd'+n+'" placeholder="请将 JD 全文粘贴在此处..."></textarea>' +
+  '</div>';
+}
+
+function eduHTML(n) {
+  var del = n>1 ? '<button class="btn-remove" onclick="removeEducation('+n+')">删除</button>' : '';
+  return '<div class="sub-section" data-education="'+n+'">' +
+    '<div class="sub-section-title"><span class="dot">教育经历 '+n+'</span>'+del+'</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">学历</label><select class="field-select" name="eduDegree'+n+'"><option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option><option>大专</option></select></div>' +
+      '<div class="field"><label class="field-label">学校全称</label><input class="field-input" name="eduSchool'+n+'" placeholder="北京大学"></div>' +
+    '</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">专业全称</label><input class="field-input" name="eduMajor'+n+'" placeholder="计算机科学与技术"></div>' +
+      '<div class="field"><label class="field-label">就读时间</label><input class="field-input" name="eduTime'+n+'" placeholder="2020.09 - 2024.06"></div>' +
+    '</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" name="eduGpa'+n+'" placeholder="3.7/4.0，专业前15%"></div>' +
+      '<div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" name="eduHonors'+n+'" placeholder="国家奖学金（2022）"></div>' +
+    '</div>' +
+    '<div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses'+n+'" placeholder="数据结构、操作系统、机器学习"></div>' +
+  '</div>';
+}
+
+function campusHTML(n) {
+  var del = n>1 ? '<button class="btn-remove" onclick="removeCampus('+n+')">删除</button>' : '';
+  return '<div class="sub-section" data-campus="'+n+'">' +
+    '<div class="sub-section-title"><span class="dot">校园/竞赛经历 '+n+'</span>'+del+'</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">活动/竞赛名称</label><input class="field-input" name="camName'+n+'" placeholder="校学生会外联部 / 数学建模竞赛"></div>' +
+      '<div class="field"><label class="field-label">级别</label><select class="field-select" name="camLevel'+n+'"><option value="">请选择</option><option>校级</option><option>省级</option><option>国家级</option><option>国际级</option><option>不适用</option></select></div>' +
+    '</div>' +
+    '<div class="field-row">' +
+      '<div class="field"><label class="field-label">时间</label><input class="field-input" name="camTime'+n+'" placeholder="2021.09 - 2022.06"></div>' +
+      '<div class="field"><label class="field-label">你的角色</label><input class="field-input" name="camRole'+n+'" placeholder="干事 / 队长 / 组长"></div>' +
+    '</div>' +
+    '<div class="field"><label class="field-label">做了什么</label><textarea class="field-textarea" name="camDesc'+n+'" placeholder="描述具体做了什么，承担了什么责任"></textarea></div>' +
+    '<div class="field"><label class="field-label">成果 / 收获</label><input class="field-input" name="camResult'+n+'" placeholder="拉到2万元赞助 / 获得二等奖"></div>' +
+  '</div>';
+}
+
+// ═══════════════════════════════════
+// ADD / REMOVE
+// ═══════════════════════════════════
+
+function addInternship() {
+  internshipCount++;
+  document.getElementById('internshipContainer').insertAdjacentHTML('beforeend', internHTML(internshipCount));
+  bindSection(document.getElementById('internshipContainer').lastElementChild);
+  updateProgress(); autoSave();
+}
+function removeInternship(n) {
+  var el = document.querySelector('[data-internship="'+n+'"]');
+  el.style.opacity = '0';
+  setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300);
+}
+function addProject() {
+  projectCount++;
+  document.getElementById('projectContainer').insertAdjacentHTML('beforeend', projHTML(projectCount));
+  bindSection(document.getElementById('projectContainer').lastElementChild);
+  updateProgress(); autoSave();
+}
+function removeProject(n) {
+  var el = document.querySelector('[data-project="'+n+'"]');
+  el.style.opacity = '0';
+  setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300);
+}
+function addJD() {
+  jdCount++;
+  document.getElementById('jdContainer').insertAdjacentHTML('beforeend', jdHTML(jdCount));
+  updateProgress(); autoSave();
+}
+function removeJD(n) {
+  var el = document.querySelector('[data-jd="'+n+'"]');
+  el.style.opacity = '0';
+  setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300);
+}
+function addEducation() {
+  eduCount++;
+  var container = document.getElementById('educationContainer');
+  if (!container) return;
+  container.insertAdjacentHTML('beforeend', eduHTML(eduCount));
+  var newEl = document.querySelector('[data-education="'+eduCount+'"]');
+  if (!newEl) return;
+  bindSection(newEl);
+  updateProgress(); autoSave();
+}
+function removeEducation(n) {
+  var el = document.querySelector('[data-education="'+n+'"]');
+  el.style.opacity = '0';
+  setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300);
+}
+function addCampus() {
+  campusCount++;
+  var container = document.getElementById('campusContainer');
+  if (!container) return;
+  container.insertAdjacentHTML('beforeend', campusHTML(campusCount));
+  var newEl = document.querySelector('[data-campus="'+campusCount+'"]');
+  if (!newEl) return;
+  bindSection(newEl);
+  updateProgress(); autoSave();
+}
+function removeCampus(n) {
+  var el = document.querySelector('[data-campus="'+n+'"]');
+  el.style.opacity = '0';
+  setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300);
+}
+
+// ── Photo handler ──
+function handlePhoto(input) {
+  var preview = document.getElementById('photoPreview');
+  var dataInput = document.getElementById('photoData');
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      dataInput.value = e.target.result;
+      preview.style.display = 'block';
+      preview.innerHTML = '<div style="position:relative;display:inline-block;">'+
+        '<img src="'+e.target.result+'" style="max-width:120px;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;">'+
+        '<span onclick="removePhoto()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;background:#ef4444;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;box-shadow:0 2px 4px rgba(0,0,0,0.15);">×</span>'+
+        '</div>'+
+        '<br><span style="font-size:12px;color:#6b7280;">'+input.files[0].name+' ('+Math.round(input.files[0].size/1024)+'KB)</span>';
+      updateProgress(); autoSave();
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function removePhoto() {
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('photoPreview').innerHTML = '';
+  document.getElementById('photoData').value = '';
+  var fileInput = document.querySelector('input[name="photo"]');
+  if (fileInput) fileInput.value = '';
+  updateProgress(); autoSave();
+}
+
+// ═══════════════════════════════════
+// BINDING
+// ═══════════════════════════════════
+
+function bindSection(parent) {
+  parent.querySelectorAll('.field-input, .field-textarea, .field-select').forEach(function(el) {
+    el.addEventListener('input', onInput);
+    el.addEventListener('change', onInput);
+  });
+}
+function bindAll() {
+  document.querySelectorAll('.field-input, .field-textarea, .field-select').forEach(function(el) {
+    el.addEventListener('input', onInput);
+    el.addEventListener('change', onInput);
+  });
+  document.querySelectorAll('.checkbox-pill input').forEach(function(cb) {
+    cb.addEventListener('change', onInput);
+  });
+}
+function onInput() { updateProgress(); autoSave(); }
+
+// ═══════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════
+
+function updateProgress() {
+  var sections = document.querySelectorAll('.section[data-section]');
+  var completed = 0;
+  sections.forEach(function(section) {
+    var inputs = section.querySelectorAll('.field-input, .field-textarea, .field-select');
+    var filled = 0;
+    inputs.forEach(function(inp) {
+      if (inp.tagName === 'SELECT') { if (inp.value) filled++; }
+      else { if (inp.value.trim()) filled++; }
+    });
+    var subInputs = section.querySelectorAll('[data-internship] .field-input, [data-internship] .field-textarea, [data-project] .field-input, [data-project] .field-textarea');
+    subInputs.forEach(function(inp) { if (inp.value.trim()) filled++; });
+    var total = Math.max(inputs.length + subInputs.length, 1);
+    var pct = filled / total;
+    if (pct > 0.2) { section.classList.add('completed'); completed++; }
+    else { section.classList.remove('completed'); }
+  });
+  var overallPct = completed / 9;
+  document.getElementById('progressFill').style.width = (overallPct * 100) + '%';
+  document.getElementById('progressPct').textContent = Math.round(overallPct * 100) + '%';
+  var conf1 = document.getElementById('confirm1').checked;
+  var conf2 = document.getElementById('confirm2').checked;
+  var allInputs = document.querySelectorAll('.field-input, .field-textarea, .field-select');
+  var filledCount = 0;
+  allInputs.forEach(function(el) {
+    if (el.tagName === 'SELECT') { if (el.value) filledCount++; }
+    else if (el.value && el.value.trim()) filledCount++;
+  });
+  var btn = document.getElementById('submitBtn');
+  if (conf1 && conf2 && filledCount >= 3) { btn.classList.add('ready'); }
+  else { btn.classList.remove('ready'); }
+}
+
+['confirm1','confirm2'].forEach(function(id) {
+  document.getElementById(id).addEventListener('change', updateProgress);
+});
+
+// ═══════════════════════════════════
+// AUTO SAVE
+// ═══════════════════════════════════
+
+function autoSave() {
+  var data = {};
+  document.querySelectorAll('[name]').forEach(function(el) {
+    if (el.type === 'checkbox' || el.type === 'radio') {
+      if (el.checked) {
+        if (!data[el.name]) data[el.name] = [];
+        data[el.name].push(el.value);
+      }
+    } else {
+      if (el.value) data[el.name] = el.value;
+    }
+  });
+  data._ic = internshipCount;
+  data._pc = projectCount;
+  data._jc = jdCount;
+  data._ec = eduCount;
+  data._cc = campusCount;
+  data._ts = Date.now();
+  localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(data));
+  var dot = document.getElementById('saveDot');
+  dot.textContent = '● 已保存 ' + new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+  dot.classList.add('saved');
+  setTimeout(function(){ dot.classList.remove('saved'); }, 2000);
+}
+
+// ═══════════════════════════════════
+// VALIDATION & SUBMIT
+// ═══════════════════════════════════
+
+function validateForm() {
+  var valid = true;
+  var firstError = null;
+  document.querySelectorAll('[required]').forEach(function(el) {
+    var parent = el.closest('.field');
+    var err = parent ? parent.querySelector('.error-msg') : null;
+    if (!el.value.trim()) {
+      el.classList.add('error');
+      if (err) err.classList.add('show');
+      valid = false;
+      if (!firstError) firstError = el;
+    } else {
+      el.classList.remove('error');
+      if (err) err.classList.remove('show');
+    }
+  });
+  if (firstError) {
+    var section = firstError.closest('.section');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      section.style.borderColor = '#ef4444';
+      section.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+      setTimeout(function(){ section.style.borderColor = ''; section.style.boxShadow = ''; }, 2000);
+    }
+  }
+  return valid;
+}
+
+function handleSubmit() {
+  var btn = document.getElementById('submitBtn');
+  if (!btn.classList.contains('ready')) {
+    var allChecked = document.getElementById('confirm1').checked && document.getElementById('confirm2').checked;
+    if (!allChecked) {
+      showToast('请先勾选底部两个确认项');
+      document.querySelector('.submit-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    var allInputs2 = document.querySelectorAll('.field-input, .field-textarea, .field-select');
+    var filled2 = 0;
+    allInputs2.forEach(function(el) {
+      if (el.tagName === 'SELECT') { if (el.value) filled2++; }
+      else if (el.value && el.value.trim()) filled2++;
+    });
+    if (filled2 < 3) { showToast('请至少填写姓名、学校和至少一段经历'); }
+    validateForm();
+    return;
+  }
+  if (!validateForm()) { showToast('请先填写必填项（标 * 的字段）'); return; }
+  submitForm();
+}
+
+function submitForm() {
+  var q = function(n) { var el = document.querySelector('[name="'+n+'"]'); return el ? el.value.trim() : ''; };
+  var gc = function(n) { return Array.from(document.querySelectorAll('[name="'+n+'"]:checked')).map(function(e) { return e.value; }); };
+
+  var s = '';
+  s += '【基本信息】\n姓名：'+q('name')+' | 性别：'+q('gender')+' | 出生年月：'+q('birth')+'\n手机：'+q('phone')+' | 邮箱：'+q('email')+' | 微信：'+q('wechat')+'\n目标城市：'+q('city')+'\n\n';
+
+  s += '【教育背景】\n';
+  for (var i = 1; i <= eduCount; i++) {
+    var ee = document.querySelector('[data-education="'+i+'"]');
+    if (!ee) continue;
+    var dg = q('eduDegree'+i); if (!dg) continue;
+    s += '教育'+i+'：'+dg+' · '+q('eduSchool'+i)+' · '+q('eduMajor'+i)+' · '+q('eduTime'+i)+'\nGPA：'+q('eduGpa'+i)+' | 荣誉：'+q('eduHonors'+i)+' | 课程：'+q('eduCourses'+i)+'\n\n';
+  }
+
+  s += '【实习经历】\n';
+  for (var i = 1; i <= internshipCount; i++) {
+    var el = document.querySelector('[data-internship="'+i+'"]');
+    if (!el) continue;
+    var co = q('internCompany'+i); if (!co) continue;
+    s += '实习'+i+'：'+co+' · '+q('internRole'+i)+' · '+q('internTime'+i)+'\n职责：'+q('internDuty'+i)+'\n成果：'+q('internResult'+i)+'\n工具：'+q('internTools'+i)+'\n\n';
+  }
+
+  s += '【项目经历】\n';
+  for (var i = 1; i <= projectCount; i++) {
+    var el = document.querySelector('[data-project="'+i+'"]');
+    if (!el) continue;
+    var pn = q('projName'+i); if (!pn) continue;
+    s += '项目'+i+'：'+pn+' · '+q('projTime'+i)+' · '+q('projRole'+i)+'\n技术：'+q('projTech'+i)+'\n简介：'+q('projDesc'+i)+'\n成果：'+q('projResult'+i)+'\n贡献：'+q('projContrib'+i)+'\n\n';
+  }
+
+  s += '【校园活动 & 竞赛】\n';
+  var camFilled = false;
+  for (var i = 1; i <= campusCount; i++) {
+    var cc = document.querySelector('[data-campus="'+i+'"]');
+    if (!cc) continue;
+    var cn = q('camName'+i); if (!cn) continue;
+    camFilled = true;
+    s += '经历'+i+'：'+cn+' · '+q('camLevel'+i)+' · '+q('camTime'+i)+' · '+q('camRole'+i)+'\n描述：'+q('camDesc'+i)+'\n成果：'+q('camResult'+i)+'\n\n';
+  }
+  if (!camFilled) s += '（未填写）\n\n';
+
+  s += '【技能】\n硬技能：'+(q('hardSkills')||'（未填写）')+'\n语言：'+q('language1')+' | '+q('language2')+'\n软技能：'+(gc('softSkill').join('、')||'（未勾选）')+'\n\n';
+  s += '【求职意向】\n行业：'+q('industry')+' | 岗位：'+q('roleType')+'\n薪资：'+q('salary')+' | 实习：'+q('internAccept')+'\n';
+  for (var i = 1; i <= jdCount; i++) { var jv = q('jd'+i); if (jv) s += 'JD'+i+'：\n'+jv+'\n'; }
+  s += '\n';
+  s += '【补充】\n优势：'+(q('strength')||'（未填写）')+'\n短板：'+(q('weakness')||'（未填写）')+'\n特殊需求：'+(q('special')||'（无）')+'\n';
+
+  // Store summary
+  var summaryEl = document.getElementById('modalSummary');
+  if (!summaryEl) {
+    // Create hidden summary element for copy
+    var hidden = document.createElement('div');
+    hidden.id = 'modalSummary';
+    hidden.style.display = 'none';
+    document.body.appendChild(hidden);
+  }
+  document.getElementById('modalSummary') || (function(){
+    var h = document.createElement('div');
+    h.id = 'modalSummary';
+    h.style.display = 'none';
+    document.body.appendChild(h);
+  })();
+  document.getElementById('modalSummary').textContent = s;
+
+  document.getElementById('modalOverlay').classList.add('show');
+  var copyBtn = document.getElementById('copyBtn');
+  copyBtn.classList.remove('copied');
+  copyBtn.textContent = '📋 一键复制，发回给我';
+
+  autoSave();
+}
+
+// ═══════════════════════════════════
+// COPY
+// ═══════════════════════════════════
+
+function copyResult() {
+  var summary = document.getElementById('modalSummary').textContent;
+  var footer = '\n【选择产品】\n🎯 面试遥控器 39.9元\n包含：双版简历HTML（深空黑+极简白）+ 钩子式求职策略HTML\n';
+  var full = summary + footer;
+
+  navigator.clipboard.writeText(full).then(function() {
+    var btn = document.getElementById('copyBtn');
+    btn.textContent = '✅ 已复制！去微信粘贴发送';
+    btn.classList.add('copied');
+    showToast('✅ 已复制！请打开微信，粘贴发送给面试遥控器');
+  }).catch(function() {
+    var div = document.getElementById('modalSummary');
+    var range = document.createRange();
+    range.selectNodeContents(div);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    showToast('请长按选中文字后复制，发送给面试遥控器');
+  });
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════
+// TOAST
+// ═══════════════════════════════════
+
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+
+// ═══════════════════════════════════
+// INIT
+// ═══════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function() {
+  addEducation();
+  addInternship();
+  addProject();
+  addCampus();
+  addJD();
+
+  bindAll();
+
+  // Restore from localStorage if available
+  if (localStorage.getItem(AUTO_SAVE_KEY)) {
+    try {
+      var raw = localStorage.getItem(AUTO_SAVE_KEY);
+      var data = JSON.parse(raw);
+      Object.keys(data).forEach(function(key) {
+        if (key.startsWith('_')) return;
+        var val = data[key];
+        if (Array.isArray(val)) {
+          val.forEach(function(v) {
+            var cb = document.querySelector('[name="'+key+'"][value="'+v+'"]');
+            if (cb) cb.checked = true;
+          });
+        } else {
+          var el = document.querySelector('[name="'+key+'"]');
+          if (el && val) { el.value = val; }
+        }
+      });
+    } catch(e) {}
+  }
+
+  updateProgress();
+
+  ['confirm1','confirm2'].forEach(function(id) {
+    document.getElementById(id).addEventListener('change', updateProgress);
+  });
+
+  window.addEventListener('beforeunload', autoSave);
+
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+});
+</script>
+
+</body>
+</html>
