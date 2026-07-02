@@ -370,10 +370,14 @@
   }
   .product-info .pi-text { flex: 1; font-size: 0.88rem; line-height: 1.6; min-width: 200px; }
   .product-info .pi-text strong { color: var(--accent); }
-  .product-info .pi-price {
-    font-size: 1.8rem; font-weight: 900; color: var(--accent);
-    white-space: nowrap;
-  }
+  .product-info .pi-price-block { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+  .product-info .pi-price-anchor-row { display:flex; align-items:center; gap:8px; }
+  .product-info .pi-price-was { font-size:1rem; color:var(--muted); text-decoration:line-through; font-weight:600; opacity:0.7; }
+  .product-info .pi-price-arrow { font-size:1.2rem; color:var(--accent); font-weight:900; }
+  .product-info .pi-price-now { font-size:1.8rem; font-weight:900; color:var(--accent); white-space:nowrap; }
+  .product-info .pi-price-save-tag { font-size:0.72rem; font-weight:800; color:#fff; background:#ef4444; padding:2px 10px; border-radius:10px; letter-spacing:0.5px; animation: pulse-save 2s ease-in-out infinite; }
+  .product-info .pi-price-urgency { font-size:0.7rem; color:#ef4444; font-weight:700; }
+  @keyframes pulse-save { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
   /* ── Submit area ── */
   .submit-area {
@@ -502,13 +506,13 @@
   .delivery-item .di-name { font-weight: 700; font-size: 0.85rem; }
   .delivery-item .di-desc { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
 
-  .final-price-tag {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
+  .final-price-block { text-align:center; margin-bottom:16px; display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .final-price-anchor-row { display:flex; align-items:center; gap:10px; justify-content:center; }
+  .final-price-was { font-size:1.1rem; color:var(--muted); text-decoration:line-through; font-weight:600; opacity:0.7; }
+  .final-price-arrow { font-size:1.4rem; color:var(--accent); font-weight:900; }
+  .final-price-now { font-size:2rem; font-weight:900; color:var(--accent); }
+  .final-price-save-tag { font-size:0.8rem; font-weight:800; color:#fff; background:#ef4444; padding:3px 14px; border-radius:12px; letter-spacing:0.5px; animation: pulse-save 2s ease-in-out infinite; }
+  .final-price-urgency { font-size:0.75rem; color:#ef4444; font-weight:700; }
 
   /* ── Modal actions ── */
   .modal-actions {
@@ -622,7 +626,15 @@ window.onerror = function(msg, url, line, col, err) {
     <strong>双版简历 HTML</strong>（深空黑 + 极简白）+ <strong>钩子式求职策略 HTML</strong><br>
     简历中预埋🪝钩子 → 引导面试官追问 → 策略里已备好所有答案
   </div>
-  <div class="pi-price">39.9 元</div>
+  <div class="pi-price-block">
+    <div class="pi-price-anchor-row">
+      <span class="pi-price-was">¥99.9</span>
+      <span class="pi-price-arrow">↘</span>
+      <span class="pi-price-now">¥39.9</span>
+    </div>
+    <div class="pi-price-save-tag">💥 立省 ¥60</div>
+    <div class="pi-price-urgency">⚡ 限时特惠 · 随时恢复原价</div>
+  </div>
 </div>
 
 <!-- ═══ 1. 基本信息 ═══ -->
@@ -838,7 +850,15 @@ window.onerror = function(msg, url, line, col, err) {
       </div>
     </div>
 
-    <div class="final-price-tag">39.9 元</div>
+    <div class="final-price-block">
+      <div class="final-price-anchor-row">
+        <span class="final-price-was">¥99.9</span>
+        <span class="final-price-arrow">↘</span>
+        <span class="final-price-now">¥39.9</span>
+      </div>
+      <div class="final-price-save-tag">💥 立省 ¥60</div>
+      <div class="final-price-urgency">⚡ 限时特惠 · 随时恢复原价</div>
+    </div>
 
     <div class="modal-actions">
       <button class="btn btn-primary" id="copyBtn" onclick="copyResult()">📋 一键复制，发回给我</button>
@@ -1255,7 +1275,7 @@ function submitForm() {
 
 function copyResult() {
   var summary = document.getElementById('modalSummary').textContent;
-  var footer = '\n【选择产品】\n🎯 面试遥控器 39.9元\n包含：双版简历HTML（深空黑+极简白）+ 钩子式求职策略HTML\n';
+  var footer = '\n【选择产品】\n🎯 面试遥控器 限时39.9元（原价99.9元）\n包含：双版简历HTML（深空黑+极简白）+ 钩子式求职策略HTML\n';
   var full = summary + footer;
 
   navigator.clipboard.writeText(full).then(function() {

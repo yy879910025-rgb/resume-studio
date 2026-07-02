@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>面试遥控器 — 代写简历 + 钩子式面经 · 39.9元</title>
+<title>面试遥控器 — 代写简历 + 钩子式面经 · 限时39.9元（原价99.9元）</title>
 <style>
   :root {
     --bg: #090c10; --surface: #11161d; --card: #181d27; --border: #232a35;
@@ -25,7 +25,14 @@
   .hero h1 { font-size:clamp(28px,6vw,42px); font-weight:900; letter-spacing:1px; line-height:1.2; margin-bottom:10px; }
   .hero h1 .hl { color:var(--accent); }
   .hero .subtitle { font-size:17px; color:var(--text2); margin-bottom:24px; }
-  .hero .price { display:inline-block; font-size:30px; font-weight:800; background:var(--accent); color:#fff; padding:6px 24px; border-radius:8px; box-shadow:0 4px 24px rgba(249,115,22,0.3); }
+  .hero .price-block { display:inline-flex; flex-direction:column; align-items:center; gap:6px; margin-top:4px; }
+  .hero .price-anchor-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .hero .price-was { font-size:20px; color:var(--text2); text-decoration:line-through; font-weight:600; opacity:0.7; }
+  .hero .price-arrow { font-size:22px; color:var(--accent); font-weight:900; }
+  .hero .price-now { font-size:clamp(32px,5vw,42px); font-weight:900; color:#fff; background:var(--accent); padding:10px 30px; border-radius:10px; box-shadow:0 8px 32px rgba(249,115,22,0.45); letter-spacing:2px; }
+  .hero .price-save-tag { font-size:13px; font-weight:800; color:#fff; background:#ef4444; padding:4px 14px; border-radius:14px; letter-spacing:1px; animation: pulse-save 2s ease-in-out infinite; }
+  .hero .price-urgency { font-size:12px; color:#ef4444; font-weight:700; letter-spacing:0.5px; opacity:0.9; }
+  @keyframes pulse-save { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
 
   .divider { border:none; border-top:1px solid var(--border); margin:0; }
 
@@ -120,7 +127,13 @@
   /* ── CTA ── */
   .cta { text-align:center; padding:48px 20px; background:radial-gradient(ellipse 500px 180px at 50% 100%, rgba(249,115,22,0.08) 0%, transparent 70%); }
   .cta .cta-title { font-size:22px; font-weight:800; margin-bottom:8px; }
-  .cta .cta-price { font-size:36px; font-weight:900; color:var(--accent); }
+  .cta .cta-price-block { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .cta .cta-price-anchor-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .cta .cta-price-was { font-size:22px; color:var(--text2); text-decoration:line-through; font-weight:600; opacity:0.7; }
+  .cta .cta-price-arrow { font-size:24px; color:var(--accent); font-weight:900; }
+  .cta .cta-price-now { font-size:clamp(36px,6vw,48px); font-weight:900; color:var(--accent); letter-spacing:2px; }
+  .cta .cta-price-save-tag { font-size:14px; font-weight:800; color:#fff; background:#ef4444; padding:5px 16px; border-radius:14px; letter-spacing:1px; animation: pulse-save 2s ease-in-out infinite; }
+  .cta .cta-price-urgency { font-size:13px; color:#ef4444; font-weight:700; opacity:0.9; }
   .cta .cta-desc { font-size:14px; color:var(--text2); margin-top:4px; }
 
   .footer { text-align:center; padding:24px; font-size:11px; color:var(--text2); border-top:1px solid var(--border); }
@@ -143,7 +156,15 @@
   <div class="badge">📋 简历代写 + 🎯 面经联动</div>
   <h1>简历写得好不好，<br>面试官说了算——<br><span class="hl">我们让面试官按你的剧本提问</span></h1>
   <p class="subtitle">你买的不只是一份简历。你买的是一份<strong style="color:var(--text);">带钩子的简历</strong>，和一份<strong style="color:var(--text);">预判了面试官所有追问的攻略</strong>。</p>
-  <div class="price">39.9 元</div>
+  <div class="price-block">
+    <div class="price-anchor-row">
+      <span class="price-was">¥99.9</span>
+      <span class="price-arrow">↘</span>
+      <span class="price-now">¥39.9</span>
+    </div>
+    <div class="price-save-tag">💥 立省 ¥60</div>
+    <div class="price-urgency">⚡ 限时特惠 · 随时恢复原价</div>
+  </div>
   <p style="font-size:11px;color:var(--text2);margin-top:14px;opacity:0.5;">© 简历工作室出品 · 原创内容 侵权必究</p>
 </div></section>
 
@@ -386,7 +407,7 @@
     <div class="step">
       <div class="sn">2</div>
       <h4>填信息表 + 付款</h4>
-      <p>5分钟填写基本信息和求职意向，转账 39.9 元</p>
+      <p>5分钟填写基本信息和求职意向，转账 <strong>39.9 元</strong>（原价 99.9 元）</p>
     </div>
     <div class="step">
       <div class="sn">3</div>
@@ -399,7 +420,15 @@
 <!-- ═══════════ CTA ═══════════ -->
 <section class="cta"><div class="container">
   <div class="cta-title">📱 加微信，发"面试遥控器"</div>
-  <div class="cta-price">39.9 元</div>
+  <div class="cta-price-block">
+    <div class="cta-price-anchor-row">
+      <span class="cta-price-was">¥99.9</span>
+      <span class="cta-price-arrow">↘</span>
+      <span class="cta-price-now">¥39.9</span>
+    </div>
+    <div class="cta-price-save-tag">💥 立省 ¥60</div>
+    <div class="cta-price-urgency">⚡ 限时特惠 · 随时恢复原价</div>
+  </div>
   <div class="cta-desc">一份带钩子的简历 + 一份预判了面试官所有追问的攻略<br>比一杯奶茶多十几块，换一场你主导的面试。</div>
 </div></section>
 
