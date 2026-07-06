@@ -729,7 +729,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
   var msg = document.getElementById('contactMsg');
   btn.textContent = '提交中...';
   btn.disabled = true;
-  fetch('https://1448451563-12cwae2d5r.ap-guangzhou.tencentscf.com/', {
+  fetch('https://1448451563-k18lc1ynbx.ap-guangzhou.tencentscf.com/', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ type: 'contact', name: this.contact_name.value, wechat: this.contact_wechat.value, message: this.contact_msg.value })

@@ -408,7 +408,7 @@
 
   .btn:hover { background: #2d3348; }
   .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.4; } .btn.ready { opacity: 1; background: #e8614c; }
+  .btn:disabled { opacity: 0.35; pointer-events: none; }
 
   /* ── RESULT MODAL ── */
   .modal-overlay {
@@ -613,19 +613,6 @@
 </head>
 <body>
 
-<div id="jsErrors" style="background:#fff3cd;border:2px solid #ffc107;padding:12px;margin:8px;border-radius:8px;font-size:13px;display:none;font-family:monospace;"></div>
-<script>
-window.onerror = function(msg, url, line, col, err) {
-  var el = document.getElementById('jsErrors');
-  if (el) {
-    el.style.display = 'block';
-    el.innerHTML += '<div style="color:#dc2626;margin:4px 0;">❌ 第'+line+'行: '+msg+'</div>';
-  }
-  return false;
-};
-</script>
-
-
 <!-- ═══ TOP BAR ═══ -->
 <div class="topbar">
   <div class="topbar-inner">
@@ -677,12 +664,6 @@ window.onerror = function(msg, url, line, col, err) {
     <label class="field-label">目标城市</label>
     <input class="field-input" type="text" name="city" placeholder="北京 / 上海 / 深圳 / 不限">
   </div>
-  <div class="field">
-    <label class="field-label">证件照 <span class="field-hint">（可选，用于简历头像）</span></label>
-    <input class="field-input" type="file" name="photo" accept="image/*" style="padding:8px;" onchange="handlePhoto(this)">
-    <input type="hidden" name="photoData" id="photoData">
-    <div id="photoPreview" style="margin-top:8px;display:none;"></div>
-  </div>
 </div>
 
 <!-- ═══ 2. 教育背景 ═══ -->
@@ -692,9 +673,36 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="section-title">教育背景</div>
     <span class="section-status">待填写</span>
   </div>
-  <p class="section-desc">请至少填写一段教育经历。如有多个学历（本科+硕士等），请分别添加。</p>
-  <div id="educationContainer"></div>
-  <button class="btn-add" onclick="addEducation()">+ 添加一段教育经历</button>
+
+  <div class="field-row">
+    <div class="field">
+      <label class="field-label">学校全称 <span style="color:var(--error)">*</span></label>
+      <input class="field-input" type="text" name="school" placeholder="北京大学" required>
+      <div class="error-msg">请填写学校名称</div>
+    </div>
+    <div class="field">
+      <label class="field-label">学历 <span style="color:var(--error)">*</span></label>
+      <select class="field-select" name="degree" required>
+        <option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option>
+      </select>
+      <div class="error-msg">请选择学历</div>
+    </div>
+  </div>
+
+  <div class="field-row">
+    <div class="field"><label class="field-label">专业全称</label><input class="field-input" type="text" name="major" placeholder="计算机科学与技术"></div>
+    <div class="field"><label class="field-label">就读时间</label><input class="field-input" type="text" name="eduTime" placeholder="2020.09 - 2024.06"></div>
+  </div>
+
+  <div class="field-row">
+    <div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" type="text" name="gpa" placeholder="3.7/4.0，专业前 15%"></div>
+    <div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" type="text" name="honors" placeholder="国家奖学金（2022）"></div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">相关课程 <span class="field-hint">（选 3-5 门与求职方向最相关的）</span></label>
+    <input class="field-input" type="text" name="courses" placeholder="数据结构、操作系统、机器学习">
+  </div>
 </div>
 
 <!-- ═══ 3. 实习经历 ═══ -->
@@ -728,9 +736,15 @@ window.onerror = function(msg, url, line, col, err) {
     <div class="section-title">校园活动 & 竞赛获奖</div>
     <span class="section-status">待填写</span>
   </div>
-  <p class="section-desc">包括社团、学生会、志愿活动、竞赛等。可添加多条。</p>
-  <div id="campusContainer"></div>
-  <button class="btn-add" onclick="addCampus()">+ 添加一段校园/竞赛经历</button>
+
+  <div class="field">
+    <label class="field-label">校园活动 & 社团经历</label>
+    <textarea class="field-textarea" name="activities" placeholder="活动名称 · 时间 · 你的角色 · 做了什么 · 成果/收获&#10;&#10;示例：校学生会外联部 · 2021-2022 · 干事 · 为校庆拉到2万元赞助"></textarea>
+  </div>
+  <div class="field">
+    <label class="field-label">竞赛 & 获奖</label>
+    <textarea class="field-textarea" name="competitions" placeholder="奖项名称 · 时间 · 级别（校/省/国家/国际）· 排名&#10;&#10;示例：全国大学生数学建模竞赛 · 2022.09 · 国家级 · 二等奖"></textarea>
+  </div>
 </div>
 
 <!-- ═══ 6. 技能 ═══ -->
@@ -830,7 +844,7 @@ window.onerror = function(msg, url, line, col, err) {
     <label><input type="checkbox" id="confirm1"> 我确认以上信息真实准确</label>
     <label><input type="checkbox" id="confirm2"> 我理解填写越详细 = 简历效果越好</label>
   </div>
-  <button class="btn" id="submitBtn" onclick="handleSubmit()">提交信息，查看套餐推荐</button>
+  <button class="btn" id="submitBtn" disabled onclick="submitForm()">提交信息，查看套餐推荐</button>
 </div>
 
 </div>
@@ -871,6 +885,7 @@ window.onerror = function(msg, url, line, col, err) {
     <!-- actions -->
     <div class="modal-actions">
       <button class="btn-secondary" id="copyBtn" onclick="copyResult()">📋 一键复制，发回给我</button>
+	      <button class="btn" id="autoSubmitBtn" onclick="autoSubmit()" style="display:none;background:#e8614c;color:#fff;">🚀 自动提交，立即生成</button>
       <button class="btn-secondary" onclick="closeModal()">✕ 关闭</button>
     </div>
 
@@ -890,10 +905,8 @@ window.onerror = function(msg, url, line, col, err) {
 let internshipCount = 0;
 let projectCount = 0;
 let jdCount = 0;
-let eduCount = 0;
-let campusCount = 0;
 let selectedPkg = '';
-const AUTO_SAVE_KEY = 'resume_studio_form_v4';
+const AUTO_SAVE_KEY = 'resume_studio_form_v2';
 
 // ═══════════════════════════════════
 // HTML TEMPLATES
@@ -970,100 +983,6 @@ function removeJD(n) {
   setTimeout(() => { el.remove(); updateProgress(); autoSave(); }, 300);
 }
 
-// ── Education ──
-function eduHTML(n) {
-  var del = n>1 ? '<button class="btn-remove" onclick="removeEducation('+n+')">删除</button>' : '';
-  return '<div class="sub-section" data-education="'+n+'">' +
-    '<div class="sub-section-title"><span class="dot">教育经历 '+n+'</span>'+del+'</div>' +
-    '<div class="field-row">' +
-      '<div class="field"><label class="field-label">学历 <span style="color:var(--error)">*</span></label><select class="field-select" name="eduDegree'+n+'" required><option value="">请选择</option><option>本科</option><option>硕士</option><option>博士</option><option>大专</option></select><div class="error-msg">请选择学历</div></div>' +
-      '<div class="field"><label class="field-label">学校全称 <span style="color:var(--error)">*</span></label><input class="field-input" name="eduSchool'+n+'" placeholder="北京大学" required><div class="error-msg">请填写学校</div></div>' +
-    '</div>' +
-    '<div class="field-row">' +
-      '<div class="field"><label class="field-label">专业全称</label><input class="field-input" name="eduMajor'+n+'" placeholder="计算机科学与技术"></div>' +
-      '<div class="field"><label class="field-label">就读时间</label><input class="field-input" name="eduTime'+n+'" placeholder="2020.09 - 2024.06"></div>' +
-    '</div>' +
-    '<div class="field-row">' +
-      '<div class="field"><label class="field-label">GPA / 排名</label><input class="field-input" name="eduGpa'+n+'" placeholder="3.7/4.0，专业前15%"></div>' +
-      '<div class="field"><label class="field-label">荣誉 / 奖学金</label><input class="field-input" name="eduHonors'+n+'" placeholder="国家奖学金（2022）"></div>' +
-    '</div>' +
-    '<div class="field"><label class="field-label">相关课程 <span class="field-hint">（3-5门最相关的）</span></label><input class="field-input" name="eduCourses'+n+'" placeholder="数据结构、操作系统、机器学习"></div>' +
-  '</div>';
-}
-function addEducation() { 
-  eduCount++; 
-  var container = document.getElementById('educationContainer');
-  if (!container) { alert('educationContainer not found!'); return; }
-  container.insertAdjacentHTML('beforeend', eduHTML(eduCount)); 
-  var newEl = document.querySelector('[data-education="'+eduCount+'"]');
-  if (!newEl) { alert('new education element not found!'); return; }
-  bindSection(newEl); 
-  updateProgress(); 
-  autoSave(); 
-}
-function removeEducation(n) { var el=document.querySelector('[data-education="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
-
-// ── Campus ──
-function campusHTML(n) {
-  var del = n>1 ? '<button class="btn-remove" onclick="removeCampus('+n+')">删除</button>' : '';
-  return '<div class="sub-section" data-campus="'+n+'">' +
-    '<div class="sub-section-title"><span class="dot">校园/竞赛经历 '+n+'</span>'+del+'</div>' +
-    '<div class="field-row">' +
-      '<div class="field"><label class="field-label">活动/竞赛名称</label><input class="field-input" name="camName'+n+'" placeholder="校学生会外联部 / 数学建模竞赛"></div>' +
-      '<div class="field"><label class="field-label">级别</label><select class="field-select" name="camLevel'+n+'"><option value="">请选择</option><option>校级</option><option>省级</option><option>国家级</option><option>国际级</option><option>不适用</option></select></div>' +
-    '</div>' +
-    '<div class="field-row">' +
-      '<div class="field"><label class="field-label">时间</label><input class="field-input" name="camTime'+n+'" placeholder="2021.09 - 2022.06"></div>' +
-      '<div class="field"><label class="field-label">你的角色</label><input class="field-input" name="camRole'+n+'" placeholder="干事 / 队长 / 组长"></div>' +
-    '</div>' +
-    '<div class="field"><label class="field-label">做了什么</label><textarea class="field-textarea" name="camDesc'+n+'" placeholder="描述具体做了什么，承担了什么责任"></textarea></div>' +
-    '<div class="field"><label class="field-label">成果 / 收获</label><input class="field-input" name="camResult'+n+'" placeholder="拉到2万元赞助 / 获得二等奖"></div>' +
-  '</div>';
-}
-
-function addCampus() { 
-  campusCount++; 
-  var container = document.getElementById('campusContainer');
-  if (!container) { alert('campusContainer not found!'); return; }
-  container.insertAdjacentHTML('beforeend', campusHTML(campusCount)); 
-  var newEl = document.querySelector('[data-campus="'+campusCount+'"]');
-  if (!newEl) { alert('new campus element not found!'); return; }
-  bindSection(newEl); 
-  updateProgress(); 
-  autoSave(); 
-}
-function removeCampus(n) { var el=document.querySelector('[data-campus="'+n+'"]'); el.style.opacity='0'; setTimeout(function(){ el.remove(); updateProgress(); autoSave(); }, 300); }
-
-// ── Photo handler ──
-function handlePhoto(input) {
-  var preview = document.getElementById('photoPreview');
-  var dataInput = document.getElementById('photoData');
-  if (input.files && input.files[0]) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      dataInput.value = e.target.result;
-      preview.style.display = 'block';
-      preview.innerHTML = '<div style="position:relative;display:inline-block;">'+
-        '<img src="'+e.target.result+'" style="max-width:120px;max-height:160px;border-radius:8px;border:1px solid #e5e7eb;">'+
-        '<span onclick="removePhoto()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;background:#ef4444;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;line-height:1;box-shadow:0 2px 4px rgba(0,0,0,0.15);">×</span>'+
-        '</div>'+
-        '<br><span style="font-size:12px;color:#6b7280;">'+input.files[0].name+' ('+Math.round(input.files[0].size/1024)+'KB)</span>';
-      updateProgress();
-      autoSave();
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-function removePhoto() {
-  document.getElementById('photoPreview').style.display = 'none';
-  document.getElementById('photoPreview').innerHTML = '';
-  document.getElementById('photoData').value = '';
-  var fileInput = document.querySelector('input[name="photo"]');
-  if (fileInput) fileInput.value = '';
-  updateProgress();
-  autoSave();
-}
-
 // ═══════════════════════════════════
 // BINDING
 // ═══════════════════════════════════
@@ -1117,26 +1036,17 @@ function updateProgress() {
     else { section.classList.remove('completed'); }
   });
 
-  const overallPct = completed / 9;
+  const overallPct = completed / 8;
   document.getElementById('progressFill').style.width = (overallPct * 100) + '%';
   document.getElementById('progressPct').textContent = Math.round(overallPct * 100) + '%';
 
   // Enable submit
   const conf1 = document.getElementById('confirm1').checked;
   const conf2 = document.getElementById('confirm2').checked;
-  // 统计所有有值的输入框（不依赖 .filled class）
-  var allInputs = document.querySelectorAll('.field-input, .field-textarea, .field-select');
-  var filledCount = 0;
-  allInputs.forEach(function(el) {
-    if (el.tagName === 'SELECT') { if (el.value) filledCount++; }
-    else if (el.value && el.value.trim()) filledCount++;
-  });
-  var btn = document.getElementById('submitBtn');
-  if (conf1 && conf2 && filledCount >= 3) {
-    btn.classList.add('ready');
-  } else {
-    btn.classList.remove('ready');
-  }
+  const hasContent = document.querySelectorAll('.field-input, .field-textarea').length > 0 &&
+                     !!document.querySelector('[name="name"]')?.value.trim() &&
+                     !!document.querySelector('[name="school"]')?.value.trim();
+  document.getElementById('submitBtn').disabled = !(conf1 && conf2 && hasContent);
 }
 
 ['confirm1','confirm2'].forEach(id => {
@@ -1162,8 +1072,6 @@ function autoSave() {
   data._ic = internshipCount;
   data._pc = projectCount;
   data._jc = jdCount;
-  data._ec = eduCount;
-  data._cc = campusCount;
   data._ts = Date.now();
 
   localStorage.setItem(AUTO_SAVE_KEY, JSON.stringify(data));
@@ -1182,8 +1090,6 @@ function restoreForm() {
   internshipCount = data._ic || 0;
   projectCount = data._pc || 0;
   jdCount = data._jc || 0;
-  eduCount = data._ec || 0;
-  campusCount = data._cc || 0;
 
   const ic = document.getElementById('internshipContainer');
   const pc = document.getElementById('projectContainer');
@@ -1217,8 +1123,7 @@ function validateForm() {
   let valid = true;
   let firstError = null;
   document.querySelectorAll('[required]').forEach(el => {
-    const parent = el.closest('.field');
-    const err = parent ? parent.querySelector('.error-msg') : null;
+    const err = el.closest('.field')?.querySelector('.error-msg');
     if (!el.value.trim()) {
       el.classList.add('error');
       if (err) err.classList.add('show');
@@ -1229,53 +1134,13 @@ function validateForm() {
       if (err) err.classList.remove('show');
     }
   });
-  if (firstError) {
-    // Find the section containing the error
-    var section = firstError.closest('.section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else {
-      firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    // Flash the section
-    if (section) {
-      section.style.borderColor = '#ef4444';
-      section.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
-      setTimeout(function(){ section.style.borderColor = ''; section.style.boxShadow = ''; }, 2000);
-    }
-  }
+  if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
   return valid;
 }
 
 // ═══════════════════════════════════
 // SUBMIT
 // ═══════════════════════════════════
-
-function handleSubmit() {
-  var btn = document.getElementById('submitBtn');
-  if (!btn.classList.contains('ready')) {
-    // Not ready: validate and scroll to error, or show what's missing
-    var allChecked = document.getElementById('confirm1').checked && document.getElementById('confirm2').checked;
-    if (!allChecked) {
-      showToast('请先勾选底部两个确认项');
-      document.querySelector('.submit-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
-    var allInputs2 = document.querySelectorAll('.field-input, .field-textarea, .field-select');
-    var filled2 = 0;
-    allInputs2.forEach(function(el) {
-      if (el.tagName === 'SELECT') { if (el.value) filled2++; }
-      else if (el.value && el.value.trim()) filled2++;
-    });
-    if (filled2 < 3) {
-      showToast('请至少填写姓名、学校和至少一段经历');
-    }
-    // Also try validateForm
-    validateForm();
-    return;
-  }
-  submitForm();
-}
 
 function submitForm() {
   if (!validateForm()) {
@@ -1289,13 +1154,7 @@ function submitForm() {
   const gc = n => Array.from(document.querySelectorAll(`[name="${n}"]:checked`)).map(e => e.value);
 
   s += `【基本信息】\n姓名：${q('name')} | 性别：${q('gender')} | 出生年月：${q('birth')}\n手机：${q('phone')} | 邮箱：${q('email')} | 微信：${q('wechat')}\n目标城市：${q('city')}\n\n`;
-  s += `【教育背景】\n`;
-  for (let i = 1; i <= eduCount; i++) {
-    var ee = document.querySelector('[data-education="'+i+'"]');
-    if (!ee) continue;
-    var dg = q('eduDegree'+i); if (!dg) continue;
-    s += `教育${i}：${dg} · ${q('eduSchool'+i)} · ${q('eduMajor'+i)} · ${q('eduTime'+i)}\nGPA：${q('eduGpa'+i)} | 荣誉：${q('eduHonors'+i)} | 课程：${q('eduCourses'+i)}\n\n`;
-  }
+  s += `【教育背景】\n学校：${q('school')} | 学历：${q('degree')} | 专业：${q('major')}\n时间：${q('eduTime')} | GPA/排名：${q('gpa')}\n荣誉：${q('honors')}\n课程：${q('courses')}\n\n`;
 
   s += `【实习经历】\n`;
   for (let i = 1; i <= internshipCount; i++) {
@@ -1313,16 +1172,8 @@ function submitForm() {
     s += `项目${i}：${pn} · ${q(`projTime${i}`)} · ${q(`projRole${i}`)}\n技术：${q(`projTech${i}`)}\n简介：${q(`projDesc${i}`)}\n成果：${q(`projResult${i}`)}\n贡献：${q(`projContrib${i}`)}\n\n`;
   }
 
-  s += '【校园活动 & 竞赛】\n';
-  var camFilled = false;
-  for (let i = 1; i <= campusCount; i++) {
-    var cc = document.querySelector('[data-campus="'+i+'"]');
-    if (!cc) continue;
-    var cn = q('camName'+i); if (!cn) continue;
-    camFilled = true;
-    s += `经历${i}：${cn} · ${q('camLevel'+i)} · ${q('camTime'+i)} · ${q('camRole'+i)}\n描述：${q('camDesc'+i)}\n成果：${q('camResult'+i)}\n\n`;
-  }
-  if (!camFilled) s += '（未填写）\n\n';
+  s += `【校园活动】\n${q('activities') || '（未填写）'}\n\n`;
+  s += `【竞赛获奖】\n${q('competitions') || '（未填写）'}\n\n`;
   s += `【技能】\n硬技能：${q('hardSkills') || '（未填写）'}\n语言：${q('language1')} | ${q('language2')}\n软技能：${gc('softSkill').join('、') || '（未勾选）'}\n\n`;
 
   s += `【求职意向】\n行业：${q('industry')} | 岗位：${q('roleType')}\n薪资：${q('salary')} | 实习：${q('internAccept')}\n`;
@@ -1342,7 +1193,62 @@ function submitForm() {
   document.getElementById('copyBtn').textContent = '📋 一键复制，发回给我';
   document.getElementById('finalMsg').innerHTML = '复制后请通过微信发回给我<br>24 小时内我会给出免费分析和套餐建议';
 
+  // Build structured data for API
+  window._orderData = buildOrderData();
+  document.getElementById('autoSubmitBtn').style.display = 'inline-block';
+
   autoSave();
+}
+
+// ═══════════════════════════════════
+// AUTO SUBMIT (v2)
+// ═══════════════════════════════════
+
+const API_URL = 'https://1448451563-k18lc1ynbx.ap-guangzhou.tencentscf.com';
+
+function buildOrderData() {
+  const q = n => { const el = document.querySelector(`[name="${n}"]`); return el ? el.value.trim() : ''; };
+  const edus = [];
+  if (q('school')) edus.push({school: q('school'), degree: q('degree'), major: q('major'), grad_year: q('eduTime'), gpa: q('gpa'), honors: q('honors'), details: q('courses')});
+  const exps = [];
+  for (let i=1; i<=internshipCount; i++) {
+    const c = q(`internCompany${i}`); if (!c) continue;
+    exps.push({company: c, role: q(`internRole${i}`), start: (q(`internTime${i}`).split('–')[0]||'').trim(), end: (q(`internTime${i}`).split('–')[1]||q(`internTime${i}`)).trim(), description: q(`internDuty${i}`) + (q(`internResult${i}`)?'。成果：'+q(`internResult${i}`):'')});
+  }
+  const projs = [];
+  for (let i=1; i<=projectCount; i++) {
+    const pn = q(`projName${i}`); if (!pn) continue;
+    projs.push({name: pn, role: q(`projRole${i}`), start: (q(`projTime${i}`).split('–')[0]||'').trim(), end: (q(`projTime${i}`).split('–')[1]||q(`projTime${i}`)).trim(), description: q(`projDesc${i}`) + (q(`projResult${i}`)?'。成果：'+q(`projResult${i}`):'')});
+  }
+  const skills = (q('hardSkills')||'').split(/[,，、\s]+/).filter(Boolean);
+  const certs = [];
+  if (q('language1')) certs.push(q('language1'));
+  if (q('language2')) certs.push(q('language2'));
+  return {
+    name: q('name'), phone: q('phone'), email: q('email'),
+    target_role: q('roleType'), target_city: q('city'), target_industry: q('industry'),
+    education: edus, experiences: exps, projects: projs, skills: skills,
+    certifications: certs,
+    jd_text: (()=>{let j='';for(let i=1;i<=jdCount;i++){const v=q(`jd${i}`);if(v)j+=v+'\n';}return j;})(),
+    extra_notes: '优势：'+q('strength')+'。短板：'+q('weakness'),
+  };
+}
+
+function autoSubmit() {
+  const btn = document.getElementById('autoSubmitBtn');
+  btn.textContent = '⏳ 提交中...'; btn.disabled = true;
+  const data = window._orderData || buildOrderData();
+  fetch(API_URL + '/api/order/create', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  }).then(r => r.json()).then(res => {
+    if (res.success) {
+      btn.textContent = '✅ 已提交！我们会尽快处理';
+      document.getElementById('finalMsg').innerHTML = '订单已创建，请支付 ¥39.9<br>支付后系统将自动生成简历';
+    } else {
+      btn.textContent = '❌ 提交失败，请重试'; btn.disabled = false;
+    }
+  }).catch(e => { btn.textContent = '❌ 网络错误，请重试'; btn.disabled = false; });
 }
 
 // ═══════════════════════════════════
@@ -1404,31 +1310,22 @@ function showToast(msg) {
 
 document.addEventListener('DOMContentLoaded', () => {
   // Add first items
-  addEducation();
   addInternship();
   addProject();
-  addCampus();
   addJD();
 
   bindAll();
 
   // Restore
   if (localStorage.getItem(AUTO_SAVE_KEY)) {
-    // 只恢复表单字段值，不重建动态区块（区块已在上面创建）
-    try {
-      const raw = localStorage.getItem(AUTO_SAVE_KEY);
-      const data = JSON.parse(raw);
-      Object.keys(data).forEach(key => {
-        if (key.startsWith('_')) return;
-        const val = data[key];
-        if (Array.isArray(val)) {
-          val.forEach(v => { const cb = document.querySelector('[name="'+key+'"][value="'+v+'"]'); if (cb) cb.checked = true; });
-        } else {
-          const el = document.querySelector('[name="'+key+'"]');
-          if (el) { el.value = val; if (val.trim()) el.classList.add('filled'); }
-        }
-      });
-    } catch(e) {}
+    document.getElementById('internshipContainer').innerHTML = '';
+    document.getElementById('projectContainer').innerHTML = '';
+    document.getElementById('jdContainer').innerHTML = '';
+    internshipCount = 0; projectCount = 0; jdCount = 0;
+    restoreForm();
+    if (internshipCount === 0) addInternship();
+    if (projectCount === 0) addProject();
+    if (jdCount === 0) addJD();
   }
 
   updateProgress();
